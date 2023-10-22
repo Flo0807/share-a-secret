@@ -15,6 +15,8 @@ The URLs are not stored. This means that as long as you keep the links private, 
 Tech stack:
 - Elixir, Phoenix, LiveView, TailwindCSS, daisyUI, PostgreSQL
 
+The idea for this project came from https://github.com/Luzifer/ots. I wanted to build something similar using Elixir and Phoenix. If you want to be able to share files as well, check out the linked project.
+
 ## Development
 
 Setup and run PostgreSQL database, e.g. with Docker:
