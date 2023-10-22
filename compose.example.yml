@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  app:
+    image: florian087/share-a-secret:latest
+    ports:
+      - "4000:4000"
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: database
+      DB_NAME: postgres
+      SECRET_KEY_BASE: "fxcNnRdiwtsVvjYxPb1XDeL5fLqQdNP7XkILChPq0TODPAnv+8mPet56WfICmlv5"
+      PHX_HOST: "localhost"
+      PORT: 4000
+    depends_on:
+      - database
+  database:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+volumes:
+  postgres_data:

@@ -1,6 +1,6 @@
 # Share a Secret
 
-Share a Secret is an open-source secret sharing platform.
+Share a Secret is an open-source and self-hosted secret sharing platform.
 
 It lets you securely share information with trusted people through a link. This can be anything - a message, a password or a piece of information you want to share discreetly.
 
@@ -16,6 +16,49 @@ Tech stack:
 - Elixir, Phoenix, LiveView, TailwindCSS, daisyUI, PostgreSQL
 
 The idea for this project came from https://github.com/Luzifer/ots. I wanted to build something similar using Elixir and Phoenix. If you want to be able to share files as well, check out the linked project.
+
+## Self-Hosted
+ 
+In order to add an extra layer of security, you should host this application yourself. This way you can be sure that the secrets are only stored on your server and not on a third-party server. 
+To keep it simple, we provide a [Docker image](https://hub.docker.com/r/florian087/share-a-secret) you can use to run the application.
+
+### Docker Compose
+
+The easiest way to run the application is using Docker Compose. You can use the `compose.example.yml` file to get started.
+
+First you have to create a secret key for the application:
+  
+```bash
+mix phx.gen.secret
+```
+
+Copy the output and paste it into the `SECRET_KEY_BASE` environment variable in the `compose.yml` file.
+
+Adjust the other environment variables as needed.
+
+Then you can start the application with:
+
+```bash
+docker compose up
+```
+
+The first time you start, you will need to run the database migrations before you can use the application. Optionally, if you are not using the default database from your database container, you will also need to create the database.
+
+The following commands need to be run inside the running container. You can do this for example with `docker compose run app <command>`.
+
+Create the database:
+
+```bash
+bin/share_secret eval 'ShareSecret.Release.create()'
+```
+
+Run the migrations:
+
+```bash
+bin/share_secret eval 'ShareSecret.Release.migrate()'
+```
+
+You can now access the application at configured host and port.
 
 ## Development
 

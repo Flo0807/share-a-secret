@@ -21,18 +21,16 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
-  database_url =
-    System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
-
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
   config :share_secret, ShareSecret.Repo,
     # ssl: true,
-    url: database_url,
+    username: System.get_env("DB_USER") || raise("environment variable DB_USER is missing"),
+    password:
+      System.get_env("DB_PASSWORD") || raise("environment variable DB_PASSWORD is missing"),
+    hostname: System.get_env("DB_HOST") || raise("environment variable DB_HOST is missing"),
+    database: System.get_env("DB_NAME") || raise("environment variable DB_NAME is missing"),
+    port: System.get_env("DB_PORT", "5432"),
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     socket_options: maybe_ipv6
 
