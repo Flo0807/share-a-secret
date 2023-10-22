@@ -1,5 +1,7 @@
 # Share a Secret
 
+**Demo:** [share-a-secret.fly.dev](https://share-a-secret.fly.dev/)
+
 Share a Secret is an open-source and self-hosted secret sharing platform.
 
 It lets you securely share information with trusted people through a link. This can be anything - a message, a password or a piece of information you want to share discreetly.
