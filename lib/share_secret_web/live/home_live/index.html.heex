@@ -1,0 +1,65 @@
+<.form
+  :if={@links == []}
+  for={@form}
+  as={:create_links_form}
+  phx-submit="submit"
+  class="flex flex-col gap-y-4"
+>
+  <.input
+    type="textarea"
+    field={@form[:secret]}
+    label={gettext("Enter your secret here")}
+    placeholder="Secret..."
+    required
+  />
+
+  <.input
+    class="w-20"
+    type="number"
+    field={@form[:link_count]}
+    label={gettext("Number of links")}
+    min="1"
+    max={@max_links}
+    required
+  />
+
+  <.input
+    class="w-32"
+    type="select"
+    field={@form[:expiration]}
+    label={gettext("Expiration")}
+    options={@expiration_options}
+    value={@expiration_default}
+    required
+  />
+
+  <button class="btn btn-primary mt-4 self-start" aria-disabled={@loading} type="submit">
+    <%= gettext("Generate links") %>
+    <span :if={@loading} class="loading loading-spinner"></span>
+  </button>
+
+  <p :if={@error} class="text-error mt-4 italic">
+    <%= @error %>
+  </p>
+</.form>
+
+<div :if={@links != []}>
+  <h1 class="text-3xl"><%= gettext("Your links") %></h1>
+
+  <.alert
+    class="mt-4"
+    type={:warning}
+    text={
+      gettext(
+        "The following links will reveal your secret. Keep the links as confidential as possible. Each link is valid only once!"
+      )
+    }
+  />
+
+  <.secret_link
+    :for={{link, index} <- Enum.with_index(@links)}
+    id={"link-#{index}"}
+    link={link}
+    class="mt-6"
+  />
+</div>

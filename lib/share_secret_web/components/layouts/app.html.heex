@@ -1,0 +1,18 @@
+<.information_modal />
+<div class="flex h-full flex-col justify-between">
+  <div>
+    <header class="bg-base-100 text-base-content">
+      <.navbar />
+    </header>
+    <main class="px-6 py-8">
+      <%= @inner_content %>
+    </main>
+  </div>
+  <footer class="self-center pb-4 text-sm">
+    <%= gettext("powered by") %> <.github_icon class="inline w-4 fill-current" />
+    <.link href="https://github.com/Flo0807/share-a-secret" target="_blank" class="link">
+      share-a-secret
+    </.link>
+    v<%= Application.spec(:share_secret)[:vsn] %>
+  </footer>
+</div>

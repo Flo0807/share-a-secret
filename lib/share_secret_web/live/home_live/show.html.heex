@@ -1,0 +1,43 @@
+<h1 class="text-3xl">
+  <%= gettext("Reveal a secret") %>
+</h1>
+
+<.alert :if={@error} class="mt-4" type={:error} text={@error} />
+
+<div :if={!@error} class="mt-4">
+  <.alert
+    type={:info}
+    text={
+      gettext(
+        "Once you have revealed the secret, you will no longer be able to access it using this URL."
+      )
+    }
+  />
+
+  <div class="mt-6">
+    <textarea :if={@secret} id="secret-text" class="textarea textarea-bordered w-full" readonly><%= @secret %></textarea>
+    <.copy_to_clipboard
+      :if={@secret}
+      class="btn btn-neutral mt-6"
+      aria-label={gettext("Copy secret")}
+      clipboard_text={@secret}
+    >
+      <:active>
+        <div class="text-success flex items-center space-x-2">
+          <p><%= gettext("Copy secret") %></p>
+          <.icon name="hero-clipboard-document-check" />
+        </div>
+      </:active>
+      <:idle>
+        <div class="flex items-center space-x-2">
+          <p><%= gettext("Copy secret") %></p>
+          <.icon name="hero-clipboard" />
+        </div>
+      </:idle>
+    </.copy_to_clipboard>
+
+    <button :if={!@secret} class="btn btn-primary" phx-click="reveal-secret">
+      <%= gettext("Reveal") %>
+    </button>
+  </div>
+</div>

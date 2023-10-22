@@ -1,0 +1,184 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/share_secret_web/components/core_components.ex:177
+#, elixir-autogen, elixir-format
+msgid "Copy"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex:11
+#, elixir-autogen, elixir-format
+msgid "Enter your secret here"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/show.ex:31
+#, elixir-autogen, elixir-format
+msgid "Error while decrypting the secret. Please try again."
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex:30
+#, elixir-autogen, elixir-format
+msgid "Expiration"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.ex:78
+#, elixir-autogen, elixir-format
+msgid "Failed to create links."
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:331
+#, elixir-autogen, elixir-format
+msgid "How it works"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.ex:62
+#, elixir-autogen, elixir-format
+msgid "Invalid form data."
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/show.ex:56
+#, elixir-autogen, elixir-format
+msgid "Invalid link. Check that you have entered the correct URL. This may also be an indication that the secret has already been revealed by someone else."
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex:20
+#, elixir-autogen, elixir-format
+msgid "Number of links"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/show.html.heex:11
+#, elixir-autogen, elixir-format
+msgid "Once you have revealed the secret, you will no longer be able to access it using this URL."
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/show.html.heex:40
+#, elixir-autogen, elixir-format
+msgid "Reveal"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/show.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Reveal a secret"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex:53
+#, elixir-autogen, elixir-format
+msgid "The following links will reveal your secret. Keep the links as confidential as possible. Each link is valid only once!"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex:47
+#, elixir-autogen, elixir-format
+msgid "Your links"
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:217
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.ex:11
+#, elixir-autogen, elixir-format
+msgid "%{count} day"
+msgid_plural "%{count} days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/share_secret_web/live/home_live/index.ex:9
+#: lib/share_secret_web/live/home_live/index.ex:10
+#, elixir-autogen, elixir-format
+msgid "%{count} hour"
+msgid_plural "%{count} hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/share_secret_web/live/home_live/index.ex:8
+#, elixir-autogen, elixir-format, fuzzy
+msgid "%{count} minute"
+msgid_plural "%{count} minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/share_secret_web/live/home_live/index.ex:12
+#: lib/share_secret_web/live/home_live/index.ex:13
+#, elixir-autogen, elixir-format
+msgid "%{count} week"
+msgid_plural "%{count} weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/share_secret_web/components/core_components.ex:390
+#, elixir-autogen, elixir-format
+msgid "Dark"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex:37
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Generate links"
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:398
+#, elixir-autogen, elixir-format
+msgid "GitHub"
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:367
+#, elixir-autogen, elixir-format
+msgid "Homepage"
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:386
+#, elixir-autogen, elixir-format
+msgid "Light"
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:340
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Once you have entered a secret, you can configure how many links you need and how long the secret will be available. This will generate links that you can copy and give to trusted people. Once they have accessed the secret, the link is no longer valid."
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:350
+#, elixir-autogen, elixir-format
+msgid "The URLs are not stored. This means that as long as you keep the links private, it is impossible for anyone to access the decrypted secret."
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:345
+#, elixir-autogen, elixir-format, fuzzy
+msgid "The secret is stored in the database in an encrypted form. The decryption key is part of the URL, adding an extra layer of security. Only the person with the link can decrypt the secret, ensuring it is securely delivered to the intended recipient. This means that even if someone gains access to the secret itself, they won't be able to decrypt it without the specific key in the URL."
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:379
+#, elixir-autogen, elixir-format
+msgid "Theme"
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:335
+#, elixir-autogen, elixir-format, fuzzy
+msgid "lets you securely share information with trusted people through a link. This can be anything - a message, a password or a piece of information you want to share discreetly."
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:180
+#, elixir-autogen, elixir-format
+msgid "Copy %{id}"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/show.html.heex:22
+#: lib/share_secret_web/live/home_live/show.html.heex:27
+#: lib/share_secret_web/live/home_live/show.html.heex:33
+#, elixir-autogen, elixir-format
+msgid "Copy secret"
+msgstr ""
+
+#: lib/share_secret_web/components/layouts/app.html.heex:12
+#, elixir-autogen, elixir-format
+msgid "powered by"
+msgstr ""
