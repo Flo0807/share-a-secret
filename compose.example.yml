@@ -6,11 +6,7 @@ services:
     ports:
       - "4000:4000"
     environment:
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_HOST: database
-      DB_NAME: postgres
-      SECRET_KEY_BASE: "fxcNnRdiwtsVvjYxPb1XDeL5fLqQdNP7XkILChPq0TODPAnv+8mPet56WfICmlv5"
+      DATABASE_URL: "ecto://postgres:postgres@database/postgres"
       PHX_HOST: "localhost"
       PORT: 4000
     depends_on:
