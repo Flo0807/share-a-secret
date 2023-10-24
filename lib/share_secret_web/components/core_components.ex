@@ -172,7 +172,7 @@ defmodule ShareSecretWeb.CoreComponents do
   def secret_link(assigns) do
     ~H"""
     <div class={["flex space-x-2", @class]}>
-      <input id={@id} type="text" class="input input-bordered w-full" value={@link} />
+      <input id={@id} type="text" class="input input-bordered w-full" value={@link} readonly />
 
       <div class="tooltip" data-tip={gettext("Copy")}>
         <.copy_to_clipboard
