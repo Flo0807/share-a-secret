@@ -53,7 +53,7 @@ defmodule ShareSecretWeb do
     quote do
       use Phoenix.LiveView,
         layout: {ShareSecretWeb.Layouts, :app},
-        container: {:div, class: "h-full"}
+        container: {:div, class: "main-container"}
 
       unquote(html_helpers())
     end
