@@ -408,7 +408,7 @@ defmodule ShareSecretWeb.CoreComponents do
   attr :clipboard_text, :string, required: true, doc: "the text to be copied to the clipboard"
 
   attr :animation_duration, :integer,
-    default: 500,
+    default: 1000,
     doc: "the duration of the animation in milliseconds"
 
   attr :class, :string, default: nil, doc: "extra class to be added to the button"
