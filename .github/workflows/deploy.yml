@@ -44,4 +44,4 @@ jobs:
           context: .
           push: true
           tags: florian087/share-a-secret:latest,florian087/share-a-secret:${{ github.event.release.tag_name }}
-          build-args: FLY_IO_RELEASE=false
+          build-args: FLY_IO_RELEASE="false"
