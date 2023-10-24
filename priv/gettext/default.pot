@@ -36,7 +36,7 @@ msgstr ""
 msgid "Failed to create links."
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:331
+#: lib/share_secret_web/components/core_components.ex:325
 #, elixir-autogen, elixir-format
 msgid "How it works"
 msgstr ""
@@ -116,7 +116,7 @@ msgid_plural "%{count} weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/share_secret_web/components/core_components.ex:390
+#: lib/share_secret_web/components/core_components.ex:384
 #, elixir-autogen, elixir-format
 msgid "Dark"
 msgstr ""
@@ -126,42 +126,42 @@ msgstr ""
 msgid "Generate links"
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:398
+#: lib/share_secret_web/components/core_components.ex:392
 #, elixir-autogen, elixir-format
 msgid "GitHub"
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:367
+#: lib/share_secret_web/components/core_components.ex:361
 #, elixir-autogen, elixir-format
 msgid "Homepage"
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:386
+#: lib/share_secret_web/components/core_components.ex:380
 #, elixir-autogen, elixir-format
 msgid "Light"
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:340
+#: lib/share_secret_web/components/core_components.ex:334
 #, elixir-autogen, elixir-format
 msgid "Once you have entered a secret, you can configure how many links you need and how long the secret will be available. This will generate links that you can copy and give to trusted people. Once they have accessed the secret, the link is no longer valid."
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:350
+#: lib/share_secret_web/components/core_components.ex:344
 #, elixir-autogen, elixir-format
 msgid "The URLs are not stored. This means that as long as you keep the links private, it is impossible for anyone to access the decrypted secret."
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:345
+#: lib/share_secret_web/components/core_components.ex:339
 #, elixir-autogen, elixir-format
 msgid "The secret is stored in the database in an encrypted form. The decryption key is part of the URL, adding an extra layer of security. Only the person with the link can decrypt the secret, ensuring it is securely delivered to the intended recipient. This means that even if someone gains access to the secret itself, they won't be able to decrypt it without the specific key in the URL."
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:379
+#: lib/share_secret_web/components/core_components.ex:373
 #, elixir-autogen, elixir-format
 msgid "Theme"
 msgstr ""
 
-#: lib/share_secret_web/components/core_components.ex:335
+#: lib/share_secret_web/components/core_components.ex:329
 #, elixir-autogen, elixir-format
 msgid "lets you securely share information with trusted people through a link. This can be anything - a message, a password or a piece of information you want to share discreetly."
 msgstr ""
@@ -181,4 +181,9 @@ msgstr ""
 #: lib/share_secret_web/components/layouts/app.html.heex:12
 #, elixir-autogen, elixir-format
 msgid "powered by"
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex:399
+#, elixir-autogen, elixir-format
+msgid "More information"
 msgstr ""

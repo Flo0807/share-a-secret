@@ -86,7 +86,7 @@ defmodule ShareSecretWeb.CoreComponents do
     ~H"""
     <div phx-feedback-for={@name}>
       <div class="form-control">
-        <label class="label cursor-pointer">
+        <label for={@id} class="label cursor-pointer">
           <span :if={@label} class="label-text">
             <%= @label %>
           </span>
@@ -110,7 +110,7 @@ defmodule ShareSecretWeb.CoreComponents do
     ~H"""
     <div phx-feedback-for={@name}>
       <div class="form-control">
-        <label class="label">
+        <label for={@id} class="label">
           <span :if={@label} class="label-text">
             <%= @label %>
           </span>
@@ -128,7 +128,7 @@ defmodule ShareSecretWeb.CoreComponents do
     ~H"""
     <div phx-feedback-for={@name}>
       <div class="form-control">
-        <label class="label">
+        <label for={@id} class="label">
           <span :if={@label} class="label-text">
             <%= @label %>
           </span>
@@ -144,7 +144,7 @@ defmodule ShareSecretWeb.CoreComponents do
     ~H"""
     <div phx-feedback-for={@name}>
       <div class="form-control">
-        <label class="label">
+        <label for={@id} class="label">
           <span :if={@label} class="label-text">
             <%= @label %>
           </span>
@@ -396,7 +396,11 @@ defmodule ShareSecretWeb.CoreComponents do
             </span>
           </.link>
 
-          <button class="btn btn-ghost" onclick="information_modal.showModal()">
+          <button
+            class="btn btn-ghost"
+            aria-label={gettext("More information")}
+            onclick="information_modal.showModal()"
+          >
             <.icon name="hero-information-circle" class="h-6 w-6" />
           </button>
         </div>
