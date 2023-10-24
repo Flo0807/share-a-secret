@@ -46,18 +46,18 @@ docker compose up
 
 The first time you start, you will need to run the database migrations before you can use the application. Optionally, if you are not using the default database from your database container, you will also need to create the database.
 
-The following commands need to be run inside the running container. You can do this for example with `docker compose run app <command>`.
+The following commands need to be run inside the running container. You can do this for example with `docker compose run app <command>` or by entering the container.
 
 Create the database:
 
 ```bash
-bin/share_secret eval 'ShareSecret.Release.create()'
+/app/bin/create
 ```
 
 Run the migrations:
 
 ```bash
-bin/share_secret eval 'ShareSecret.Release.migrate()'
+/app/bin/migrate
 ```
 
 You can now access the application at configured host and port.
