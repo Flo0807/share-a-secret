@@ -358,7 +358,7 @@ defmodule ShareSecretWeb.CoreComponents do
     ~H"""
     <nav class="navbar border-base-200 border-b px-2 py-2 shadow-sm">
       <div class="flex-1">
-        <.link navigate={~p"/"} aria-label={gettext("Homepage")}>
+        <.link href={~p"/"} aria-label={gettext("Homepage")}>
           <span class="btn btn-ghost flex items-center space-x-1 normal-case">
             <.logo_icon class="inline-block h-6 w-auto fill-current" />
             <p class="hidden text-xl sm:block">Share a Secret</p>
