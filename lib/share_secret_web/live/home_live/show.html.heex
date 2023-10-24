@@ -20,7 +20,7 @@
       :if={@secret}
       class="btn btn-neutral mt-6"
       aria-label={gettext("Copy secret")}
-      clipboard_text={@secret}
+      clipboard_element_id="secret-text"
     >
       <:active>
         <div class="text-success flex items-center space-x-2">

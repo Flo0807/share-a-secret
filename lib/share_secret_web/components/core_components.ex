@@ -178,7 +178,7 @@ defmodule ShareSecretWeb.CoreComponents do
         <.copy_to_clipboard
           class="btn btn-neutral"
           aria-label={gettext("Copy %{id}", %{id: @id})}
-          clipboard_text={@link}
+          clipboard_element_id={@id}
         >
           <:active>
             <.icon class="text-success" name="hero-clipboard-document-check" />
@@ -409,7 +409,9 @@ defmodule ShareSecretWeb.CoreComponents do
     """
   end
 
-  attr :clipboard_text, :string, required: true, doc: "the text to be copied to the clipboard"
+  attr :clipboard_element_id, :string,
+    required: true,
+    doc: "the element id of the clipboard element"
 
   attr :animation_duration, :integer,
     default: 1000,
@@ -427,8 +429,9 @@ defmodule ShareSecretWeb.CoreComponents do
     <button
       x-data={"{
         copyNotification: false,
-        copyToClipboard() {
-            navigator.clipboard.writeText('#{@clipboard_text}');
+        copyToClipboard(id) {
+            value = document.getElementById(id).value
+            navigator.clipboard.writeText(value);
             this.copyNotification = true;
             let that = this;
             setTimeout(function(){
@@ -436,7 +439,7 @@ defmodule ShareSecretWeb.CoreComponents do
             }, #{@animation_duration});
         }
       }"}
-      @click="!copyNotification && copyToClipboard();"
+      @click={"!copyNotification && copyToClipboard('#{@clipboard_element_id}');"}
       class={@class}
       {@rest}
     >
