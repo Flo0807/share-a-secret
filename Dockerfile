@@ -14,6 +14,8 @@ RUN mix local.hex --force && \
 # set build ENV
 ENV MIX_ENV="prod"
 
+ENV ERL_FLAGS="+JPperf true"
+
 # install mix dependencies
 COPY mix.exs mix.lock ./
 RUN mix deps.get --only $MIX_ENV
