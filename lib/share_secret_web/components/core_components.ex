@@ -29,12 +29,11 @@ defmodule ShareSecretWeb.CoreComponents do
 
     enable = Application.get_env(:share_secret, :env) == :prod and host == @host_analytics
 
-    IO.inspect("Analytics enabled: #{enable}")
-
     assigns = assign(assigns, :enabled, enable)
 
     ~H"""
     <script
+      :if={@enabled}
       defer
       data-domain="share-a-secret.fly.dev"
       src="https://plausible.storetastic.cloud/js/script.js"
