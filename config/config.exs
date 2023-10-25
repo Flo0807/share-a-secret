@@ -7,6 +7,8 @@
 # General application configuration
 import Config
 
+config :share_secret, env: Mix.env()
+
 config :share_secret,
   ecto_repos: [ShareSecret.Repo]
 

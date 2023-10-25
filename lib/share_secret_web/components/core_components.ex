@@ -20,6 +20,29 @@ defmodule ShareSecretWeb.CoreComponents do
   alias Phoenix.LiveView.JS
   import ShareSecretWeb.Gettext
 
+  @host_analytics "share-a-secret.fly.dev"
+
+  attr :current_url, :string, required: true, doc: "the current url"
+
+  def analytics(assigns) do
+    %{host: host} = URI.parse(assigns.current_url)
+
+    enable = Application.get_env(:share_secret, :env) == :prod and host == @host_analytics
+
+    IO.inspect("Analytics enabled: #{enable}")
+
+    assigns = assign(assigns, :enabled, enable)
+
+    ~H"""
+    <script
+      defer
+      data-domain="share-a-secret.fly.dev"
+      src="https://plausible.storetastic.cloud/js/script.js"
+    >
+    </script>
+    """
+  end
+
   @doc """
   Renders an input with label.
 

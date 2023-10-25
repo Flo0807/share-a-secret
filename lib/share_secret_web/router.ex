@@ -13,8 +13,10 @@ defmodule ShareSecretWeb.Router do
   scope "/", ShareSecretWeb do
     pipe_through :browser
 
-    live "/", HomeLive.Index, :index
-    live "/:id", HomeLive.Show, :show
+    live_session :default, on_mount: ShareSecretWeb.InitAssigns do
+      live "/", HomeLive.Index, :index
+      live "/:id", HomeLive.Show, :show
+    end
   end
 
   # Enable LiveDashboard in development
