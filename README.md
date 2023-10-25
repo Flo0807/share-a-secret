@@ -60,7 +60,7 @@ Run the migrations:
 /app/bin/migrate
 ```
 
-You can now access the application at configured host and port.
+You can now access the application at configured host and port. We recommend using a reverse proxy like nginx to add SSL encryption.
 
 ## Development
 
