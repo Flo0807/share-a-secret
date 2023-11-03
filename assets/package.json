@@ -5,6 +5,6 @@
         "topbar": "^2.0.1"
     },
     "devDependencies": {
-        "daisyui": "^3.9.2"
+        "daisyui": "^3.9.4"
     }
 }
