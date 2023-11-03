@@ -72,9 +72,7 @@ docker run --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgre
 
 Configure credentials in `config/dev.exs`.
 
-Install deps with `mix deps.get`.
-
-Run `mix setup` to install and setup dependencies.
+Run `mix setup` to install and setup dependencies and database.
 
 Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`.
 
