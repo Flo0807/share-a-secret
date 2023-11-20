@@ -7,7 +7,7 @@
     "devDependencies": {
         "@tailwindcss/typography": "^0.5.10",
         "daisyui": "^3.9.4",
-        "esbuild": "^0.19.5",
+        "esbuild": "^0.19.6",
         "tailwindcss": "^3.3.5"
     }
 }
