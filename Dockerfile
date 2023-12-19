@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.15.7-erlang-26.1-debian-buster-20230612-slim as builder
+FROM hexpm/elixir:1.15.7-erlang-26.2-debian-bookworm-20231009-slim as builder
 
 # install build dependencies
 RUN apt-get update && apt-get install -y curl
