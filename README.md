@@ -22,7 +22,12 @@ The idea for this project came from https://github.com/Luzifer/ots. I wanted to 
 ## Self-Hosted
  
 In order to add an extra layer of security, you should host this application yourself. This way you can be sure that the secrets are only stored on your server and not on a third-party server. 
-To keep it simple, we provide a [Docker image](https://hub.docker.com/r/florian087/share-a-secret) you can use to run the application.
+To keep it simple, we provide a [Docker image](https://github.com/Flo0807/share-a-secret/pkgs/container/share-a-secret) you can use to run the application.
+
+You can use the following tags:
+- `latest`: The latest stable version of the application
+- `<version>`: A specific version of the application (see [releases](https://github.com/Flo0807/share-a-secret/releases) for all released versions)
+- `main`: The latest version of the `main` branch
 
 ### Docker Compose
 
