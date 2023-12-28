@@ -2,8 +2,8 @@ name: Deploy
 
 on:
   push:
-#     branches:
-#       - main
+    branches:
+      - main
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
@@ -11,13 +11,13 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # deploy:
-  #   name: Deploy app
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: superfly/flyctl-actions/setup-flyctl@master
-  #     - run: flyctl deploy --remote-only
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
 
   docker:
     name: Build and push image to ghcr
