@@ -1,6 +1,6 @@
 services:
   app:
-    image: florian087/share-a-secret:latest
+    image: ghcr.io/flo0807/share-a-secret:latest
     ports:
       - "4000:4000"
     environment:
