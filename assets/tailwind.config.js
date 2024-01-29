@@ -18,15 +18,13 @@ module.exports = {
           ...require("daisyui/src/theming/themes")["light"],
           primary: "#2563eb",
           warning: "#fbbf24",
-          info: "#38bdf8",
-          "primary-content": "white"
+          info: "#38bdf8"
         },
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
           primary: "#2563eb",
           warning: "#fbbf24",
-          info: "#38bdf8",
-          "primary-content": "white"
+          info: "#38bdf8"
         }
       },
     ],
