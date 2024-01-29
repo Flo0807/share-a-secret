@@ -12,7 +12,24 @@ module.exports = {
     "../lib/*_web/**/*.*ex"
   ],
   daisyui: {
-    themes: ["dark", "light"],
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["light"],
+          primary: "#2563eb",
+          warning: "#fbbf24",
+          info: "#38bdf8",
+          "primary-content": "white"
+        },
+        dark: {
+          ...require("daisyui/src/theming/themes")["dark"],
+          primary: "#2563eb",
+          warning: "#fbbf24",
+          info: "#38bdf8",
+          "primary-content": "white"
+        }
+      },
+    ],
   },
   plugins: [
     require("@tailwindcss/typography"),
