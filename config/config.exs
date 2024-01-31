@@ -17,6 +17,7 @@ config :share_secret, ShareSecret.Repo, migration_primary_key: [type: :uuid]
 # Configures the endpoint
 config :share_secret, ShareSecretWeb.Endpoint,
   url: [host: "localhost"],
+  adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: ShareSecretWeb.ErrorHTML, json: ShareSecretWeb.ErrorJSON],
     layout: false
