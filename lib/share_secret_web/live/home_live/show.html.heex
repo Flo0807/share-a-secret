@@ -15,7 +15,13 @@
   />
 
   <div class="mt-6">
-    <textarea :if={@secret} id="secret-text" class="textarea textarea-bordered w-full" readonly><%= @secret %></textarea>
+    <textarea
+      :if={@secret}
+      id="secret-text"
+      phx-hook="DynamicTextArea"
+      class="textarea textarea-bordered h-0 w-full"
+      readonly
+    ><%= @secret %></textarea>
     <.copy_to_clipboard
       :if={@secret}
       class="btn btn-neutral mt-6"

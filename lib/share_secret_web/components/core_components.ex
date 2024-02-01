@@ -155,7 +155,13 @@ defmodule ShareSecretWeb.CoreComponents do
             <%= @label %>
           </span>
         </label>
-        <textarea id={@id} name={@name} class={["textarea textarea-bordered", @class]} {@rest}><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
+        <textarea
+          id={@id}
+          phx-hook="DynamicTextArea"
+          name={@name}
+          class={["textarea textarea-bordered h-0", @class]}
+          {@rest}
+        ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
       </div>
     </div>
     """
