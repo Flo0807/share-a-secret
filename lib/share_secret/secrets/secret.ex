@@ -1,4 +1,7 @@
 defmodule ShareSecret.Secrets.Secret do
+  @moduledoc """
+  The secret schema.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
