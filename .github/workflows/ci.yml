@@ -45,18 +45,18 @@ jobs:
         id: deps-cache
         with:
           path: deps
-          key: ${{ runner.os }}-${{ steps.elixir_version.outputs.version }}-${{ steps.otp_version.outputs.version }}-${{ env.MIX_ENV }}-deps-mixlockhash-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          key: ${{ runner.os }}-${{ steps.elixir_version.outputs.version }}-${{ steps.otp_version.outputs.version }}-deps-mixlockhash-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           restore-keys: |
-            ${{ runner.os }}-${{ steps.elixir_version.outputs.version }}-${{ steps.otp_version.outputs.version }}-${{ env.MIX_ENV }}-deps-
+            ${{ runner.os }}-${{ steps.elixir_version.outputs.version }}-${{ steps.otp_version.outputs.version }}-deps-
 
       - name: Restore the _build cache
         uses: actions/cache@v4
         id: build-cache
         with:
           path: _build
-          key: ${{ runner.os }}-${{ steps.elixir_version.outputs.version }}-${{ steps.otp_version.outputs.version }}-${{ env.MIX_ENV }}-build-mixlockhash-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          key: ${{ runner.os }}-${{ steps.elixir_version.outputs.version }}-${{ steps.otp_version.outputs.version }}-build-mixlockhash-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           restore-keys: |
-            ${{ runner.os }}-${{ steps.elixir_version.outputs.version }}-${{ steps.otp_version.outputs.version }}-${{ env.MIX_ENV }}-build-
+            ${{ runner.os }}-${{ steps.elixir_version.outputs.version }}-${{ steps.otp_version.outputs.version }}-build-
 
       - name: Install mix dependencies
         if: steps.deps-cache.outputs.cache-hit != 'true'
