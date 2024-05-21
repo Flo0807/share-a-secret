@@ -1,6 +1,6 @@
 {
     "dependencies": {
-        "alpinejs": "^3.13.10",
+        "alpinejs": "^3.14.0",
         "theme-change": "^2.5.0",
         "topbar": "^3.0.0"
     },
