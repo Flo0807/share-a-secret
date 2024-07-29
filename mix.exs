@@ -4,7 +4,7 @@ defmodule ShareSecret.MixProject do
   def project do
     [
       app: :share_secret,
-      version: "0.3.0",
+      version: "0.5.0",
       elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
