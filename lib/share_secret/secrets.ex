@@ -7,7 +7,13 @@ defmodule ShareSecret.Secrets do
   alias ShareSecret.Repo
 
   alias ShareSecret.Secrets.Secret
-  alias ShareSecret.Crypto
+
+  @doc """
+  Returns the crypto implementation.
+  """
+  def crypto_impl do
+    Application.get_env(:share_secret, :crypto, ShareSecret.Crypto)
+  end
 
   @doc """
   Gets a single secret by id.
@@ -27,7 +33,7 @@ defmodule ShareSecret.Secrets do
   def reveal!(id, key) do
     case get_secret(id) do
       %{secret: secret} = item ->
-        encrypted_secret = Crypto.decrypt!(secret, key)
+        encrypted_secret = crypto_impl().decrypt!(secret, key)
 
         item
         |> Repo.delete!()
@@ -46,8 +52,8 @@ defmodule ShareSecret.Secrets do
     links =
       for _ <- 1..link_count do
         id = Ecto.UUID.generate()
-        key = Crypto.generate_key()
-        secret_encrypted = Crypto.encrypt(secret, key)
+        key = crypto_impl().generate_key()
+        secret_encrypted = crypto_impl().encrypt(secret, key)
         expires_at = add_seconds_to_datetime(expiration)
 
         schema = %Secret{id: id, secret: secret_encrypted, expires_at: expires_at}

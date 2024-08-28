@@ -51,7 +51,8 @@ defmodule ShareSecret.MixProject do
       {:bandit, "~> 1.0"},
       {:timex, "~> 3.7.11"},
       {:tailwind_formatter, "~> 0.4.0", only: [:dev, :test], runtime: false},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 
