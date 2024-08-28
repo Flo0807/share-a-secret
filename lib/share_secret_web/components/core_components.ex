@@ -14,11 +14,11 @@ defmodule ShareSecretWeb.CoreComponents do
 
   Icons are provided by [heroicons](https://heroicons.com). See `icon/1` for usage.
   """
+  use Gettext, backend: ShareSecret.Gettext
   use Phoenix.Component
   use ShareSecretWeb, :verified_routes
 
   alias Phoenix.LiveView.JS
-  import ShareSecretWeb.Gettext
 
   @host_analytics "share-a-secret.fly.dev"
 
