@@ -42,8 +42,9 @@ defmodule ShareSecretWeb do
         formats: [:html, :json],
         layouts: [html: ShareSecretWeb.Layouts]
 
+      use Gettext, backend: ShareSecret.Gettext
+
       import Plug.Conn
-      import ShareSecretWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -82,11 +83,13 @@ defmodule ShareSecretWeb do
 
   defp html_helpers do
     quote do
+      use Gettext, backend: ShareSecret.Gettext
+
       # HTML escaping functionality
       import Phoenix.HTML
-      # Core UI components and translation
+
+      # Core UI components
       import ShareSecretWeb.CoreComponents
-      import ShareSecretWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
