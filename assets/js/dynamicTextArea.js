@@ -1,19 +1,24 @@
 const DynamicTextArea = {
   mounted() {
-    setHeight(this.el);
+    const defaultHeight = this.el.dataset.defaultHeight;
+
+    setHeight(this.el, defaultHeight);
 
     this.el.addEventListener('input', () => {
-      setHeight(this.el);
+      setHeight(this.el, defaultHeight);
     });
   }
 }
 
-const setHeight = (textArea) => {
-  textArea.style.height = "0px";
+const setHeight = (textArea, defaultHeight) => {
+  textArea.style.height = `${defaultHeight}px`;
+
   const contentHeight = textArea.scrollHeight;
 
-  // we need to add 2px to the height to avoid the scrollbar
-  textArea.style.height = `${contentHeight + 2}px`;
+  if (contentHeight > defaultHeight) {
+    // we need to add 2px to the height to avoid the scrollbar
+    textArea.style.height = `${contentHeight + 2}px`;
+  }
 }
 
 export default DynamicTextArea;
