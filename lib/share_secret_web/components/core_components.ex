@@ -159,7 +159,8 @@ defmodule ShareSecretWeb.CoreComponents do
           id={@id}
           phx-hook="DynamicTextArea"
           name={@name}
-          class={["textarea textarea-bordered h-0", @class]}
+          class={["textarea textarea-bordered h-[100px]", @class]}
+          data-default-height={100}
           {@rest}
         ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
       </div>
@@ -384,53 +385,55 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def navbar(assigns) do
     ~H"""
-    <nav class="navbar border-base-200 border-b px-2 py-2 shadow-sm">
-      <div class="flex-1">
-        <.link href={~p"/"} aria-label={gettext("Homepage")}>
-          <span class="btn btn-ghost flex items-center space-x-1 normal-case">
-            <.logo_icon class="inline-block h-6 w-auto fill-current" />
-            <p class="hidden text-xl sm:block">Share a Secret</p>
-          </span>
-        </.link>
-      </div>
-
-      <div class="flex-none">
-        <div class="menu menu-horizontal items-center">
-          <div class="dropdown dropdown-end">
-            <label tabindex="0" class="btn btn-ghost text-sm normal-case">
-              <%= gettext("Theme") %> <.icon name="hero-chevron-down" class="h-4 w-4" />
-            </label>
-            <div
-              tabindex="0"
-              class="dropdown-content z-[1] menu bg-base-200 rounded-box w-32 p-2 shadow"
-            >
-              <button class="btn btn-sm mb-1 text-sm normal-case" data-set-theme="light">
-                <.icon name="hero-sun" class="mr-1 inline-block h-4 w-4" /> <%= gettext("Light") %>
-              </button>
-
-              <button class="btn btn-sm text-sm normal-case" data-set-theme="dark">
-                <.icon name="hero-moon" class="mr-1 inline-block h-4 w-4" /> <%= gettext("Dark") %>
-              </button>
-            </div>
-          </div>
-
-          <.link
-            href="https://github.com/Flo0807/share-a-secret"
-            target="_blank"
-            aria-label={gettext("GitHub")}
-          >
-            <span class="btn btn-ghost">
-              <.github_icon class="inline-block h-6 w-6 fill-current" />
+    <nav class="navbar border-base-200/50 border-b ">
+      <div class="mx-auto flex w-full max-w-7xl justify-between px-2">
+        <div class="">
+          <.link href={~p"/"} aria-label={gettext("Homepage")}>
+            <span class="btn btn-ghost flex items-center space-x-1 normal-case">
+              <.logo_icon class="inline-block h-6 w-auto fill-current" />
+              <p class="hidden text-xl sm:block">Share a Secret</p>
             </span>
           </.link>
+        </div>
 
-          <button
-            class="btn btn-ghost"
-            aria-label={gettext("More information")}
-            onclick="information_modal.showModal()"
-          >
-            <.icon name="hero-information-circle" class="h-6 w-6" />
-          </button>
+        <div class="flex-none">
+          <div class="menu menu-horizontal items-center">
+            <div class="dropdown dropdown-end">
+              <label tabindex="0" class="btn btn-ghost text-sm normal-case">
+                <%= gettext("Theme") %> <.icon name="hero-chevron-down" class="h-4 w-4" />
+              </label>
+              <div
+                tabindex="0"
+                class="dropdown-content z-[1] menu bg-base-200 rounded-box w-32 p-2 shadow"
+              >
+                <button class="btn btn-sm mb-1 text-sm normal-case" data-set-theme="light">
+                  <.icon name="hero-sun" class="mr-1 inline-block h-4 w-4" /> <%= gettext("Light") %>
+                </button>
+
+                <button class="btn btn-sm text-sm normal-case" data-set-theme="dark">
+                  <.icon name="hero-moon" class="mr-1 inline-block h-4 w-4" /> <%= gettext("Dark") %>
+                </button>
+              </div>
+            </div>
+
+            <.link
+              href="https://github.com/Flo0807/share-a-secret"
+              target="_blank"
+              aria-label={gettext("GitHub")}
+            >
+              <span class="btn btn-ghost">
+                <.github_icon class="inline-block h-6 w-6 fill-current" />
+              </span>
+            </.link>
+
+            <button
+              class="btn btn-ghost"
+              aria-label={gettext("More information")}
+              onclick="information_modal.showModal()"
+            >
+              <.icon name="hero-information-circle" class="h-6 w-6" />
+            </button>
+          </div>
         </div>
       </div>
     </nav>
