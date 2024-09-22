@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/flo0807/share-a-secret:latest
+    image: ghcr.io/flo0807/share-a-secret:latest@sha256:fe768c4950b84036ddd5d234944d484c5f23c1b24f1d6f4d9ffdb1bc5ba85e5c
     ports:
       - "4000:4000"
     environment:
@@ -11,7 +11,7 @@ services:
     depends_on:
       - database
   database:
-    image: postgres:latest
+    image: postgres:latest@sha256:026d0ab72b34310b68160ab9299aa1add5544e4dc3243456b94f83cb1c119c2c
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
