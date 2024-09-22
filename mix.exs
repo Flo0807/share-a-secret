@@ -42,7 +42,7 @@ defmodule ShareSecret.MixProject do
       {:phoenix_live_view, "~> 0.20.1"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.0"},
-      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
