@@ -23,6 +23,16 @@
         "major"
       ],
       "enabled": false
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchFileNames": [
+        "Dockerfile",
+        "**/Dockerfile"
+      ],
+      "pinDigests": false
     }
   ],
   "labels": [
