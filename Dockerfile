@@ -1,4 +1,20 @@
-FROM hexpm/elixir:1.17.3-erlang-27.1-debian-buster-20240612-slim as builder
+# Find eligible builder and runner images on Docker Hub. We use Ubuntu/Debian instead of
+# Alpine to avoid DNS resolution issues in production.
+#
+# https://hub.docker.com/r/hexpm/elixir/tags?page=1&name=ubuntu
+# https://hub.docker.com/_/ubuntu?tab=tags
+
+# renovate: datasource=github-tags depName=elixir packageName=elixir-lang/elixir
+ARG ELIXIR_VERSION=1.17.2
+# renovate: datasource=github-tags depName=erlang packageName=erlang/otp versioning=regex:^(?<major>\d+)\.(?<minor>\d+)(\.(?<patch>\d+))?$ extractVersion=^OTP-(?<version>.*)$
+ARG OTP_VERSION=27.0
+# renovate: datasource=docker depName=ubuntu versioning=ubuntu
+ARG UBUNTU_VERSION=jammy-20240530
+
+ARG BUILDER_IMAGE=hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-${UBUNTU_VERSION}
+ARG RUNNER_IMAGE=ubuntu:${UBUNTU_VERSION}
+
+FROM ${BUILDER_IMAGE} AS builder
 
 # install build dependencies
 RUN apt-get update && apt-get install -y curl
@@ -51,7 +67,7 @@ RUN mix release
 
 # start a new build stage so that the final image will only contain
 # the compiled release and other runtime necessities
-FROM debian:buster-20240612-slim
+FROM ${RUNNER_IMAGE}
 
 RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales \
     && apt-get clean && rm -f /var/lib/apt/lists/*_*
