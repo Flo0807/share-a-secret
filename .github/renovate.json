@@ -33,6 +33,15 @@
         "**/Dockerfile"
       ],
       "pinDigests": false
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "automerge": true,
+      "labels": [
+        "ignore-for-release"
+      ]
     }
   ],
   "labels": [
