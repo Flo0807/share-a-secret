@@ -11,7 +11,7 @@ services:
     depends_on:
       - database
   database:
-    image: postgres:latest@sha256:4ec37d2a07a0067f176fdcc9d4bb633a5724d2cc4f892c7a2046d054bb6939e5
+    image: postgres:latest@sha256:6b3d44bfe55b9b56678cd56888cebbc18891c012d9406f14fe87b134e3a031e5
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
