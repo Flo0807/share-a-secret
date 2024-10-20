@@ -16,7 +16,7 @@ defmodule ShareSecretWeb.HomeLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    form = to_form(%{"secret" => "", "expiration" => @expiration_default, "link_count" => 1})
+    changeset = change()
 
     socket =
       socket
@@ -26,7 +26,7 @@ defmodule ShareSecretWeb.HomeLive.Index do
       |> assign(:error, nil)
       |> assign(:loading, false)
       |> assign(:links, [])
-      |> assign(:form, form)
+      |> assign_form(changeset)
 
     {:ok, socket}
   end
@@ -42,44 +42,73 @@ defmodule ShareSecretWeb.HomeLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("submit", params, socket) do
-    %{"expiration" => expiration, "link_count" => link_count, "secret" => secret} = params
+  def handle_event("validate", %{"create_links_form" => params}, socket) do
+    changeset = params |> change() |> Map.put(:action, :validate)
+    socket = assign_form(socket, changeset)
 
-    expiration = expiration |> String.to_integer()
-    link_count = link_count |> String.to_integer()
+    {:noreply, socket}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("submit", %{"create_links_form" => params}, socket) do
+    result = params |> change() |> Ecto.Changeset.apply_action(:validate)
 
     socket =
-      case valid?(expiration, link_count, secret) do
-        true ->
-          send(self(), {:generate_links, expiration, link_count, secret})
+      case result do
+        {:ok, opts} ->
+          send(self(), {:generate_links, opts})
 
           socket
           |> assign(:error, nil)
           |> assign(:loading, true)
 
-        false ->
+        {:error, changeset} ->
           socket
           |> assign(:error, gettext("Invalid form data."))
+          |> assign_form(changeset)
       end
 
     {:noreply, socket}
   end
 
   @impl Phoenix.LiveView
-  def handle_info({:generate_links, expiration, link_count, secret}, socket) do
+  def handle_info({:generate_links, opts}, socket) do
+    %{secret: secret, link_count: link_count, expiration: expiration} = opts
+
     socket =
       case Secrets.create_secrets(secret, link_count, expiration) do
         {:ok, secrets} ->
-          socket
-          |> assign_links(secrets, socket.assigns.link_url)
+          assign_links(socket, secrets, socket.assigns.link_url)
 
         :error ->
-          socket
-          |> assign(:error, gettext("Failed to create links."))
+          assign(socket, :error, gettext("Failed to create links."))
       end
       |> assign(:loading, false)
 
     {:noreply, socket}
+  end
+
+  defp change(attrs \\ %{}) do
+    fields = %{
+      secret: :string,
+      link_count: :integer,
+      expiration: :integer,
+    }
+
+    default_params = %{
+      expiration: @expiration_default,
+      link_count: 1
+    }
+
+    {default_params, fields}
+    |> Ecto.Changeset.cast(attrs, Map.keys(fields))
+    |> Ecto.Changeset.validate_required([:secret, :link_count, :expiration])
+    |> Ecto.Changeset.validate_number(:link_count, greater_than: 0, less_than_or_equal_to: @max_links)
+    |> Ecto.Changeset.validate_inclusion(:expiration, Enum.map(@expiration_options, fn {_label, value} -> value end))
+  end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset, as: :create_links_form))
   end
 
   defp assign_links(socket, secrets, link_url) do
@@ -91,12 +120,5 @@ defmodule ShareSecretWeb.HomeLive.Index do
       end
 
     assign(socket, :links, links)
-  end
-
-  defp valid?(expiration, link_count, secret) do
-    valid_expirations = Enum.map(@expiration_options, fn {_label, value} -> value end)
-
-    Enum.member?(valid_expirations, expiration) and link_count > 0 and link_count <= @max_links and
-      secret != "" and byte_size(secret) <= 100_000
   end
 end
