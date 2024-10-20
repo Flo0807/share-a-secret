@@ -58,7 +58,7 @@ config :share_secret, ShareSecretWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/secret_sharing_web/(controllers|live|components)/.*(ex|heex)$"
+      ~r"lib/share_secret_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
 
