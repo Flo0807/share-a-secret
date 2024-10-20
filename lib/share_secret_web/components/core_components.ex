@@ -144,12 +144,7 @@ defmodule ShareSecretWeb.CoreComponents do
           id={@id}
           name={@name}
           multiple={@multiple}
-          class={[
-            "select phx-no-feedback:select-bordered",
-            @class,
-            @errors == [] && "select-bordered",
-            @errors != [] && "select-error"
-          ]}
+          class={["select phx-no-feedback:select-bordered", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
         >
           <option :if={@prompt} value=""><%= @prompt %></option>
           <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
@@ -173,12 +168,7 @@ defmodule ShareSecretWeb.CoreComponents do
           id={@id}
           phx-hook="DynamicTextArea"
           name={@name}
-          class={[
-            "textarea phx-no-feedback:textarea-bordered h-[100px]",
-            @class,
-            @errors == [] && "textarea-bordered",
-            @errors != [] && "textarea-error"
-          ]}
+          class={["textarea h-[100px] phx-no-feedback:textarea-bordered", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
           data-default-height={100}
           {@rest}
         ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
@@ -203,12 +193,7 @@ defmodule ShareSecretWeb.CoreComponents do
           name={@name}
           id={@id}
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-          class={[
-            "input phx-no-feedback:input-bordered",
-            @class,
-            @errors == [] && "input-bordered",
-            @errors != [] && "input-error"
-            ]}
+          class={["input phx-no-feedback:input-bordered", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
           {@rest}
         />
       </div>
@@ -224,7 +209,7 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="mt-3 flex gap-3 text-sm leading-6 text-error phx-no-feedback:hidden">
+    <p class="text-error mt-3 flex gap-3 text-sm leading-6 phx-no-feedback:hidden">
       <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
       <%= render_slot(@inner_block) %>
     </p>
@@ -546,7 +531,6 @@ defmodule ShareSecretWeb.CoreComponents do
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
   end
-
 
   def translate_error({msg, opts}) do
     # When using gettext, we typically pass the strings we want

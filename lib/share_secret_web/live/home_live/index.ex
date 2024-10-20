@@ -92,7 +92,7 @@ defmodule ShareSecretWeb.HomeLive.Index do
     fields = %{
       secret: :string,
       link_count: :integer,
-      expiration: :integer,
+      expiration: :integer
     }
 
     default_params = %{
@@ -103,8 +103,14 @@ defmodule ShareSecretWeb.HomeLive.Index do
     {default_params, fields}
     |> Ecto.Changeset.cast(attrs, Map.keys(fields))
     |> Ecto.Changeset.validate_required([:secret, :link_count, :expiration])
-    |> Ecto.Changeset.validate_number(:link_count, greater_than: 0, less_than_or_equal_to: @max_links)
-    |> Ecto.Changeset.validate_inclusion(:expiration, Enum.map(@expiration_options, fn {_label, value} -> value end))
+    |> Ecto.Changeset.validate_number(:link_count,
+      greater_than: 0,
+      less_than_or_equal_to: @max_links
+    )
+    |> Ecto.Changeset.validate_inclusion(
+      :expiration,
+      Enum.map(@expiration_options, fn {_label, value} -> value end)
+    )
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
