@@ -1,8 +1,8 @@
 <.form
   :if={@links == []}
   for={@form}
-  as={:create_links_form}
   phx-submit="submit"
+  phx-change="validate"
   class="flex flex-col gap-y-4"
 >
   <.input

@@ -80,6 +80,7 @@ defmodule ShareSecretWeb.CoreComponents do
   attr :field, Phoenix.HTML.FormField,
     doc: "a form field struct retrieved from the form, for example: @form[:email]"
 
+  attr :errors, :list, default: []
   attr :checked, :boolean, doc: "the checked flag for checkbox inputs"
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
@@ -94,6 +95,7 @@ defmodule ShareSecretWeb.CoreComponents do
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
+    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
@@ -124,6 +126,7 @@ defmodule ShareSecretWeb.CoreComponents do
           />
         </label>
       </div>
+      <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
   end
@@ -137,11 +140,17 @@ defmodule ShareSecretWeb.CoreComponents do
             <%= @label %>
           </span>
         </label>
-        <select id={@id} name={@name} multiple={@multiple} class={["select select-bordered", @class]}>
+        <select
+          id={@id}
+          name={@name}
+          multiple={@multiple}
+          class={["select phx-no-feedback:select-bordered", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
+        >
           <option :if={@prompt} value=""><%= @prompt %></option>
           <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
         </select>
       </div>
+      <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
   end
@@ -159,11 +168,12 @@ defmodule ShareSecretWeb.CoreComponents do
           id={@id}
           phx-hook="DynamicTextArea"
           name={@name}
-          class={["textarea textarea-bordered h-[100px]", @class]}
+          class={["textarea h-[100px] phx-no-feedback:textarea-bordered", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
           data-default-height={100}
           {@rest}
         ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
       </div>
+      <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
   end
@@ -183,11 +193,26 @@ defmodule ShareSecretWeb.CoreComponents do
           name={@name}
           id={@id}
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-          class={["input input-bordered", @class]}
+          class={["input phx-no-feedback:input-bordered", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
           {@rest}
         />
       </div>
+      <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
+    """
+  end
+
+  @doc """
+  Generates a generic error message.
+  """
+  slot :inner_block, required: true
+
+  def error(assigns) do
+    ~H"""
+    <p class="text-error mt-3 flex gap-3 text-sm leading-6 phx-no-feedback:hidden">
+      <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
+      <%= render_slot(@inner_block) %>
+    </p>
     """
   end
 
@@ -505,5 +530,23 @@ defmodule ShareSecretWeb.CoreComponents do
          "opacity-100 translate-y-0 sm:scale-100",
          "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}
     )
+  end
+
+  def translate_error({msg, opts}) do
+    # When using gettext, we typically pass the strings we want
+    # to translate as a static argument:
+    #
+    #     # Translate the number of files with plural rules
+    #     dngettext("errors", "1 file", "%{count} files", count)
+    #
+    # However the error messages in our forms and APIs are generated
+    # dynamically, so we need to translate them by calling Gettext
+    # with our gettext backend as first argument. Translations are
+    # available in the errors.po file (as we use the "errors" domain).
+    if count = opts[:count] do
+      Gettext.dngettext(ShareSecret.Gettext, "errors", msg, msg, count, opts)
+    else
+      Gettext.dgettext(ShareSecret.Gettext, "errors", msg, opts)
+    end
   end
 end
