@@ -34,17 +34,17 @@
   />
 
   <button class="btn btn-primary mt-4 self-start" aria-disabled={@loading} type="submit">
-    <%= gettext("Generate links") %>
+    {gettext("Generate links")}
     <span :if={@loading} class="loading loading-spinner"></span>
   </button>
 
   <p :if={@error} class="text-error mt-4 italic">
-    <%= @error %>
+    {@error}
   </p>
 </.form>
 
 <div :if={@links != []}>
-  <h1 class="text-3xl"><%= gettext("Your links") %></h1>
+  <h1 class="text-3xl">{gettext("Your links")}</h1>
 
   <.alert
     class="mt-4"
