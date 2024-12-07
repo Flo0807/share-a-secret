@@ -93,9 +93,11 @@ defmodule ShareSecretWeb.CoreComponents do
   slot :inner_block
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
@@ -108,7 +110,7 @@ defmodule ShareSecretWeb.CoreComponents do
       end)
 
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div>
       <div class="form-control">
         <label for={@id} class="label cursor-pointer">
           <span :if={@label} class="label-text">
@@ -133,7 +135,7 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div>
       <div class="form-control">
         <label for={@id} class="label">
           <span :if={@label} class="label-text">
@@ -144,7 +146,7 @@ defmodule ShareSecretWeb.CoreComponents do
           id={@id}
           name={@name}
           multiple={@multiple}
-          class={["select phx-no-feedback:select-bordered", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
+          class={["select", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
         >
           <option :if={@prompt} value="">{@prompt}</option>
           {Phoenix.HTML.Form.options_for_select(@options, @value)}
@@ -157,7 +159,7 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div>
       <div class="form-control">
         <label for={@id} class="label">
           <span :if={@label} class="label-text">
@@ -168,7 +170,7 @@ defmodule ShareSecretWeb.CoreComponents do
           id={@id}
           phx-hook="DynamicTextArea"
           name={@name}
-          class={["textarea h-[100px] phx-no-feedback:textarea-bordered", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
+          class={["textarea h-[100px]", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
           data-default-height={100}
           {@rest}
         ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
@@ -181,7 +183,7 @@ defmodule ShareSecretWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div>
       <div class="form-control">
         <label for={@id} class="label">
           <span :if={@label} class="label-text">
@@ -193,7 +195,7 @@ defmodule ShareSecretWeb.CoreComponents do
           name={@name}
           id={@id}
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-          class={["input phx-no-feedback:input-bordered", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
+          class={["input", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
           {@rest}
         />
       </div>
@@ -209,7 +211,7 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="text-error mt-3 flex gap-3 text-sm leading-6 phx-no-feedback:hidden">
+    <p class="text-error mt-3 flex gap-3 text-sm leading-6">
       <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
       {render_slot(@inner_block)}
     </p>
