@@ -6,6 +6,9 @@
     ":disableRateLimiting",
     ":reviewer(Flo0807)"
   ],
+  "ignorePaths": [
+    "compose.example.yml"
+  ],
   "packageRules": [
     {
       "groupName": "Elixir Image",
