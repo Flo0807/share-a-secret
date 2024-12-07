@@ -1,5 +1,5 @@
 <h1 class="text-3xl">
-  <%= gettext("Reveal a secret") %>
+  {gettext("Reveal a secret")}
 </h1>
 
 <.alert :if={@error} class="mt-4" type={:error} text={@error} />
@@ -31,20 +31,20 @@
     >
       <:active>
         <div class="text-success flex items-center space-x-2">
-          <p><%= gettext("Copy secret") %></p>
+          <p>{gettext("Copy secret")}</p>
           <.icon name="hero-clipboard-document-check" />
         </div>
       </:active>
       <:idle>
         <div class="flex items-center space-x-2">
-          <p><%= gettext("Copy secret") %></p>
+          <p>{gettext("Copy secret")}</p>
           <.icon name="hero-clipboard" />
         </div>
       </:idle>
     </.copy_to_clipboard>
 
     <button :if={!@secret} class="btn btn-primary" phx-click="reveal-secret">
-      <%= gettext("Reveal") %>
+      {gettext("Reveal")}
     </button>
   </div>
 </div>

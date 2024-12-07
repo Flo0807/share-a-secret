@@ -93,9 +93,11 @@ defmodule ShareSecretWeb.CoreComponents do
   slot :inner_block
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
+
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
-    |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
+    |> assign(:errors, Enum.map(errors, &translate_error(&1)))
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
@@ -108,11 +110,11 @@ defmodule ShareSecretWeb.CoreComponents do
       end)
 
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div>
       <div class="form-control">
         <label for={@id} class="label cursor-pointer">
           <span :if={@label} class="label-text">
-            <%= @label %>
+            {@label}
           </span>
           <input type="hidden" name={@name} value="false" />
           <input
@@ -126,54 +128,54 @@ defmodule ShareSecretWeb.CoreComponents do
           />
         </label>
       </div>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div>
       <div class="form-control">
         <label for={@id} class="label">
           <span :if={@label} class="label-text">
-            <%= @label %>
+            {@label}
           </span>
         </label>
         <select
           id={@id}
           name={@name}
           multiple={@multiple}
-          class={["select phx-no-feedback:select-bordered", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
+          class={["select", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
         >
-          <option :if={@prompt} value=""><%= @prompt %></option>
-          <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
+          <option :if={@prompt} value="">{@prompt}</option>
+          {Phoenix.HTML.Form.options_for_select(@options, @value)}
         </select>
       </div>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div>
       <div class="form-control">
         <label for={@id} class="label">
           <span :if={@label} class="label-text">
-            <%= @label %>
+            {@label}
           </span>
         </label>
         <textarea
           id={@id}
           phx-hook="DynamicTextArea"
           name={@name}
-          class={["textarea h-[100px] phx-no-feedback:textarea-bordered", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
+          class={["textarea h-[100px]", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
           data-default-height={100}
           {@rest}
         ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
       </div>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -181,11 +183,11 @@ defmodule ShareSecretWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div phx-feedback-for={@name}>
+    <div>
       <div class="form-control">
         <label for={@id} class="label">
           <span :if={@label} class="label-text">
-            <%= @label %>
+            {@label}
           </span>
         </label>
         <input
@@ -193,11 +195,11 @@ defmodule ShareSecretWeb.CoreComponents do
           name={@name}
           id={@id}
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-          class={["input phx-no-feedback:input-bordered", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
+          class={["input", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
           {@rest}
         />
       </div>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -209,9 +211,9 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="text-error mt-3 flex gap-3 text-sm leading-6 phx-no-feedback:hidden">
+    <p class="text-error mt-3 flex gap-3 text-sm leading-6">
       <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </p>
     """
   end
@@ -262,13 +264,13 @@ defmodule ShareSecretWeb.CoreComponents do
           <button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2">✕</button>
         </form>
         <h3 if={@header} class="text-base-content text-lg font-bold">
-          <%= @header %>
+          {@header}
         </h3>
-        <%= render_slot(@inner_block) %>
+        {render_slot(@inner_block)}
       </div>
       <form method="dialog" class="modal-backdrop">
         <button>
-          <%= gettext("close") %>
+          {gettext("close")}
         </button>
       </form>
     </dialog>
@@ -287,7 +289,7 @@ defmodule ShareSecretWeb.CoreComponents do
     <div class={["alert alert-error", @class]}>
       <.icon name="hero-exclamation-triangle" />
       <p>
-        <%= @text %>
+        {@text}
       </p>
     </div>
     """
@@ -298,7 +300,7 @@ defmodule ShareSecretWeb.CoreComponents do
     <div class={["alert alert-info", @class]}>
       <.icon name="hero-information-circle" />
       <p>
-        <%= @text %>
+        {@text}
       </p>
     </div>
     """
@@ -309,7 +311,7 @@ defmodule ShareSecretWeb.CoreComponents do
     <div class={["alert alert-warning", @class]}>
       <.icon name="hero-exclamation-triangle" />
       <p>
-        <%= @text %>
+        {@text}
       </p>
     </div>
     """
@@ -380,24 +382,24 @@ defmodule ShareSecretWeb.CoreComponents do
       <div class="bg-base-100 text-base-content space-y-2">
         <p class="mt-4">
           <span class="font-semibold">Share a Secret</span>
-          <%= gettext(
+          {gettext(
             "lets you securely share information with trusted people through a link. This can be anything - a message, a password or a piece of information you want to share discreetly."
-          ) %>
+          )}
         </p>
         <p>
-          <%= gettext(
+          {gettext(
             "Once you have entered a secret, you can configure how many links you need and how long the secret will be available. This will generate links that you can copy and give to trusted people. Once they have accessed the secret, the link is no longer valid."
-          ) %>
+          )}
         </p>
         <p>
-          <%= gettext(
+          {gettext(
             "The secret is stored in the database in an encrypted form. The decryption key is part of the URL, adding an extra layer of security. Only the person with the link can decrypt the secret, ensuring it is securely delivered to the intended recipient. This means that even if someone gains access to the secret itself, they won't be able to decrypt it without the specific key in the URL."
-          ) %>
+          )}
         </p>
         <p>
-          <%= gettext(
+          {gettext(
             "The URLs are not stored. This means that as long as you keep the links private, it is impossible for anyone to access the decrypted secret."
-          ) %>
+          )}
         </p>
       </div>
     </.modal>
@@ -425,18 +427,18 @@ defmodule ShareSecretWeb.CoreComponents do
           <div class="menu menu-horizontal items-center">
             <div class="dropdown dropdown-end">
               <label tabindex="0" class="btn btn-ghost text-sm normal-case">
-                <%= gettext("Theme") %> <.icon name="hero-chevron-down" class="h-4 w-4" />
+                {gettext("Theme")} <.icon name="hero-chevron-down" class="h-4 w-4" />
               </label>
               <div
                 tabindex="0"
                 class="dropdown-content z-[1] menu bg-base-200 rounded-box w-32 p-2 shadow"
               >
                 <button class="btn btn-sm mb-1 text-sm normal-case" data-set-theme="light">
-                  <.icon name="hero-sun" class="mr-1 inline-block h-4 w-4" /> <%= gettext("Light") %>
+                  <.icon name="hero-sun" class="mr-1 inline-block h-4 w-4" /> {gettext("Light")}
                 </button>
 
                 <button class="btn btn-sm text-sm normal-case" data-set-theme="dark">
-                  <.icon name="hero-moon" class="mr-1 inline-block h-4 w-4" /> <%= gettext("Dark") %>
+                  <.icon name="hero-moon" class="mr-1 inline-block h-4 w-4" /> {gettext("Dark")}
                 </button>
               </div>
             </div>
@@ -500,10 +502,10 @@ defmodule ShareSecretWeb.CoreComponents do
       {@rest}
     >
       <span x-show="!copyNotification">
-        <%= render_slot(@idle) %>
+        {render_slot(@idle)}
       </span>
       <span x-show="copyNotification" x-cloak>
-        <%= render_slot(@active) %>
+        {render_slot(@active)}
       </span>
     </button>
     """
