@@ -1,10 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:best-practices",
-    "customManagers:dockerfileVersions",
-    ":disableRateLimiting",
-    ":reviewer(Flo0807)"
+    "github>Flo0807/renovate-config//base",
+    "github>Flo0807/renovate-config//elixir-ubuntu"
   ],
   "ignorePaths": [
     "compose.example.yml"
@@ -17,21 +15,12 @@
       "rangeStrategy": "update-lockfile"
     },
     {
-      "groupName": "Elixir Image",
-      "matchDepNames": [
-        "elixir",
-        "erlang",
-        "ubuntu"
+      "matchManagers": [
+        "github-actions"
+      ],
+      "labels": [
+        "ignore-for-release"
       ]
-    },
-    {
-      "matchDepNames": [
-        "ubuntu"
-      ],
-      "matchUpdateTypes": [
-        "major"
-      ],
-      "enabled": false
     },
     {
       "matchDatasources": [
@@ -42,19 +31,6 @@
         "**/Dockerfile"
       ],
       "pinDigests": false
-    },
-    {
-      "matchManagers": [
-        "github-actions"
-      ],
-      "automerge": true,
-      "labels": [
-        "ignore-for-release"
-      ]
     }
-  ],
-  "labels": [
-    "dependencies",
-    "{{categories}}"
   ]
 }
