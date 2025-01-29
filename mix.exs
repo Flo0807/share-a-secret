@@ -34,34 +34,34 @@ defmodule ShareSecret.MixProject do
   defp deps do
     [
       # Core
-      {:phoenix, "~> 1.7.7"},
-      {:phoenix_html, "~> 4.0"},
-      {:phoenix_live_view, "~> 1.0.0"},
-      {:bandit, "~> 1.0"},
+      {:phoenix, "== 1.7.18"},
+      {:phoenix_html, "== 4.2.0"},
+      {:phoenix_live_view, "== 1.0.3"},
+      {:bandit, "== 1.6.6"},
 
       # Database and Persistence
-      {:ecto_sql, "~> 3.10"},
-      {:phoenix_ecto, "~> 4.4"},
-      {:postgrex, ">= 0.0.0"},
+      {:ecto_sql, "== 3.12.1"},
+      {:phoenix_ecto, "== 4.6.3"},
+      {:postgrex, "== 0.19.3"},
 
       # Monitoring and Telemetry
-      {:phoenix_live_dashboard, "~> 0.8.0"},
-      {:telemetry_metrics, "~> 1.0"},
-      {:telemetry_poller, "~> 1.0"},
+      {:phoenix_live_dashboard, "== 0.8.6"},
+      {:telemetry_metrics, "== 1.1.0"},
+      {:telemetry_poller, "== 1.1.0"},
 
       # Utilities
-      {:gettext, "~> 0.26"},
-      {:jason, "~> 1.2"},
-      {:timex, "~> 3.7.11"},
+      {:gettext, "== 0.26.2"},
+      {:jason, "== 1.4.4"},
+      {:timex, "== 3.7.11"},
 
       # Dev and Test
-      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:tailwind_formatter, "~> 0.4.0", only: [:dev, :test], runtime: false},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:floki, ">= 0.30.0", only: :test},
-      {:mox, "~> 1.0", only: :test}
+      {:esbuild, "== 0.8.2", runtime: Mix.env() == :dev},
+      {:tailwind, "== 0.2.4", runtime: Mix.env() == :dev},
+      {:phoenix_live_reload, "== 1.5.3", only: :dev},
+      {:tailwind_formatter, "== 0.4.2", only: [:dev, :test], runtime: false},
+      {:credo, "== 1.7.11", only: [:dev, :test], runtime: false},
+      {:floki, "== 0.37.0", only: :test},
+      {:mox, "== 1.2.0", only: :test}
     ]
   end
 
