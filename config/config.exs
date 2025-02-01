@@ -27,8 +27,7 @@ config :share_secret, ShareSecretWeb.Endpoint,
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.0.0",
-  path: Path.expand("../assets/node_modules/.bin/esbuild", __DIR__),
+  version: "0.24.2",
   default: [
     args:
       ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
@@ -38,8 +37,7 @@ config :esbuild,
 
 # Configure tailwind (the version is required)
 config :tailwind,
-  version: "0.0.0",
-  path: Path.expand("../assets/node_modules/.bin/tailwind", __DIR__),
+  version: "3.4.17",
   default: [
     args: ~w(
       --config=tailwind.config.js
