@@ -49,6 +49,15 @@ defmodule ShareSecret.MixProject do
       {:telemetry_metrics, "== 1.1.0"},
       {:telemetry_poller, "== 1.1.0"},
 
+      # UI
+      {:heroicons,
+       github: "tailwindlabs/heroicons",
+       tag: "v2.2.0",
+       sparse: "optimized",
+       app: false,
+       compile: false,
+       depth: 1},
+
       # Utilities
       {:gettext, "== 0.26.2"},
       {:jason, "== 1.4.4"},
