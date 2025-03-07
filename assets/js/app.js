@@ -23,16 +23,12 @@ import { LiveSocket } from 'phoenix_live_view'
 import topbar from 'topbar'
 import Alpine from 'alpinejs'
 import { themeChange } from 'theme-change'
-import DynamicTextArea from './dynamicTextArea'
+import * as Hooks from './hooks/index'
 
 window.Alpine = Alpine
 Alpine.start()
 
 themeChange()
-
-const Hooks = {
-  DynamicTextArea
-}
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content')
 const liveSocket = new LiveSocket('/live', Socket, {
