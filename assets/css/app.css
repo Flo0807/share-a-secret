@@ -1,25 +1,42 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
-@layer base {
+@plugin "daisyui" {
+  themes: light, dark --default --prefersdark;
+}
 
-  html,
-  body,
-  [data-phx-main] {
-    padding: 0;
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-    height: var(--app-height);
-  }
+@plugin "daisyui/theme" {
+  name: "light";
+  --color-secondary: oklch(68.011% 0.158 276.934);
+  --color-primary: oklch(0.488 0.243 264.376);
+}
 
-  body>[data-phx-main]>footer {
-    position: sticky;
-    top: 100dvh;
-  }
+@plugin "daisyui/theme" {
+  name: "dark";
+  --color-primary: oklch(68.5% 0.169 237.323);
+  --color-secondary: oklch(68.011% 0.158 276.934);
+}
 
-  :root {
-    --app-height: 100%;
-  }
+@plugin "../js/tailwind_heroicons.js";
+
+@variant phx-click-loading ([".phx-click-loading&", ".phx-click-loading &"]);
+@variant phx-submit-loading ([".phx-submit-loading&", ".phx-submit-loading &"]);
+@variant phx-change-loading ([".phx-change-loading&", ".phx-change-loading &"]);
+
+html,
+body,
+[data-phx-main] {
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  height: var(--app-height);
+}
+
+body>[data-phx-main]>footer {
+  position: sticky;
+  top: 100dvh;
+}
+
+:root {
+  --app-height: 100%;
 }
