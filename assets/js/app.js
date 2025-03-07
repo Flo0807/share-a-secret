@@ -26,7 +26,7 @@ import { themeChange } from 'theme-change'
 import * as Hooks from './hooks/index'
 
 window.Alpine = Alpine
-Alpine.start();
+Alpine.start()
 
 themeChange()
 
