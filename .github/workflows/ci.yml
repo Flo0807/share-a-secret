@@ -64,6 +64,10 @@ jobs:
       - name: Check Formatting (Elixir)
         run: mix format --check-formatted
 
+      - name: Install npm dependencies
+        run: npm ci
+        working-directory: ./assets
+
       - name: Check Formatting (JS)
         run: npm run lint:standard
         working-directory: ./assets
