@@ -39,6 +39,10 @@ jobs:
           cache-dependency-path: './assets/package-lock.json'
           node-version: 20
 
+      - name: Install npm dependencies
+        run: npm ci
+        working-directory: ./assets
+
       - name: Restore the deps and _build cache
         uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         id: restore-cache
@@ -65,10 +69,6 @@ jobs:
 
       - name: Check Formatting (Elixir)
         run: mix format --check-formatted
-
-      - name: Install npm dependencies
-        run: npm ci
-        working-directory: ./assets
 
       - name: Check Formatting (JS)
         run: npm run lint:standard
