@@ -111,23 +111,19 @@ defmodule ShareSecretWeb.CoreComponents do
 
     ~H"""
     <div>
-      <div class="form-control">
-        <label for={@id} class="label cursor-pointer">
-          <span :if={@label} class="label-text">
-            {@label}
-          </span>
-          <input type="hidden" name={@name} value="false" />
-          <input
-            type="checkbox"
-            id={@id}
-            name={@name}
-            value="true"
-            checked={@checked}
-            class={["checkbox checkbox-primary", @class]}
-            {@rest}
-          />
-        </label>
-      </div>
+      <fieldset class="fieldset">
+        <legend :if={@label} class="fieldset-legend">{@label}</legend>
+        <input type="hidden" name={@name} value="false" />
+        <input
+          type="checkbox"
+          id={@id}
+          name={@name}
+          value="true"
+          checked={@checked}
+          class={["checkbox checkbox-primary", @class]}
+          {@rest}
+        />
+      </fieldset>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -136,22 +132,18 @@ defmodule ShareSecretWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div>
-      <div class="form-control">
-        <label for={@id} class="label">
-          <span :if={@label} class="label-text">
-            {@label}
-          </span>
-        </label>
+      <fieldset class="fieldset">
+        <legend :if={@label} class="fieldset-legend">{@label}</legend>
         <select
           id={@id}
           name={@name}
           multiple={@multiple}
-          class={["select", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
+          class={["select w-full", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
         >
           <option :if={@prompt} value="">{@prompt}</option>
           {Phoenix.HTML.Form.options_for_select(@options, @value)}
         </select>
-      </div>
+      </fieldset>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -160,21 +152,17 @@ defmodule ShareSecretWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div>
-      <div class="form-control">
-        <label for={@id} class="label">
-          <span :if={@label} class="label-text">
-            {@label}
-          </span>
-        </label>
+      <fieldset class="fieldset">
+        <legend :if={@label} class="fieldset-legend">{@label}</legend>
         <textarea
           id={@id}
           phx-hook="DynamicTextArea"
           name={@name}
-          class={["textarea h-[100px]", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
+          class={["textarea h-[100px] w-full", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
           data-min-height={100}
           {@rest}
         ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      </div>
+      </fieldset>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -184,21 +172,17 @@ defmodule ShareSecretWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div>
-      <div class="form-control">
-        <label for={@id} class="label">
-          <span :if={@label} class="label-text">
-            {@label}
-          </span>
-        </label>
+      <fieldset class="fieldset">
+        <legend :if={@label} class="fieldset-legend">{@label}</legend>
         <input
           type={@type}
           name={@name}
           id={@id}
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-          class={["input", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
+          class={["input w-full", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
           {@rest}
         />
-      </div>
+      </fieldset>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -412,8 +396,8 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def navbar(assigns) do
     ~H"""
-    <nav class="navbar border-base-200/50 border-b ">
-      <div class="mx-auto flex w-full max-w-7xl justify-between px-2">
+    <nav class="navbar border-base-300 border-b">
+      <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-2">
         <div class="">
           <.link href={~p"/"} aria-label={gettext("Homepage")}>
             <span class="btn btn-ghost flex items-center space-x-1 normal-case">
