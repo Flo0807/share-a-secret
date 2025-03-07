@@ -1,10 +1,15 @@
 {
-    "dependencies": {
-        "alpinejs": "^3.14.1",
-        "theme-change": "^2.5.0",
-        "topbar": "^3.0.0"
-    },
-    "devDependencies": {
-        "daisyui": "4.12.24"
-    }
+  "scripts": {
+    "lint:standard": "standard",
+    "format:standard": "standard --fix"
+  },
+  "dependencies": {
+    "alpinejs": "^3.14.1",
+    "theme-change": "^2.5.0",
+    "topbar": "^3.0.0"
+  },
+  "devDependencies": {
+    "daisyui": "4.12.24",
+    "standard": "^17.1.2"
+  }
 }
