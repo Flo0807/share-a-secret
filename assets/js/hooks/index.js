@@ -1,1 +1,1 @@
-export { default as DynamicTextArea } from './dynamicTextArea';
+export { default as DynamicTextArea } from './dynamicTextArea'
