@@ -35,6 +35,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
+          cache: 'npm'
+          cache-dependency-path: './assets/package-lock.json'
           node-version: 20
 
       - name: Restore the deps and _build cache
