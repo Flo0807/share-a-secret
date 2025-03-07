@@ -66,6 +66,7 @@ jobs:
 
       - name: Check Formatting (JS)
         run: npm run lint:standard
+        working-directory: ./assets
 
       - name: Gettext
         run: mix gettext.extract --check-up-to-date
