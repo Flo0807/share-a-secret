@@ -20,7 +20,7 @@
       id="secret-text"
       phx-hook="DynamicTextArea"
       class="textarea textarea-bordered h-[100px] w-full"
-      data-default-height={100}
+      data-min-height={100}
       readonly
     ><%= @secret %></textarea>
     <.copy_to_clipboard

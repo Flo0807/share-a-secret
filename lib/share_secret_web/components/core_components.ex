@@ -171,7 +171,7 @@ defmodule ShareSecretWeb.CoreComponents do
           phx-hook="DynamicTextArea"
           name={@name}
           class={["textarea h-[100px]", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
-          data-default-height={100}
+          data-min-height={100}
           {@rest}
         ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
       </div>
