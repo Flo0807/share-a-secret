@@ -34,7 +34,7 @@ defmodule ShareSecret.MixProject do
   defp deps do
     [
       # Core
-      {:phoenix, "== 1.7.20"},
+      {:phoenix, "== 1.7.21"},
       {:phoenix_html, "== 4.2.1"},
       {:phoenix_live_view, "== 1.0.9"},
       {:bandit, "== 1.6.10"},
