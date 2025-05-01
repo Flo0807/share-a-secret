@@ -9,7 +9,7 @@
     "topbar": "^3.0.0"
   },
   "devDependencies": {
-    "daisyui": "5.0.34",
+    "daisyui": "5.0.35",
     "standard": "17.1.2"
   }
 }
