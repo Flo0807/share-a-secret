@@ -61,7 +61,7 @@ defmodule ShareSecret.MixProject do
       # Utilities
       {:gettext, "== 0.26.2"},
       {:jason, "== 1.4.4"},
-      {:timex, "== 3.7.12"},
+      {:timex, "== 3.7.13"},
 
       # Dev and Test
       {:esbuild, "== 0.10.0", runtime: Mix.env() == :dev},
