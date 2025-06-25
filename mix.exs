@@ -41,7 +41,7 @@ defmodule ShareSecret.MixProject do
 
       # Database and Persistence
       {:ecto_sql, "== 3.13.0"},
-      {:phoenix_ecto, "== 4.6.4"},
+      {:phoenix_ecto, "== 4.6.5"},
       {:postgrex, "== 0.20.0"},
 
       # Monitoring and Telemetry
