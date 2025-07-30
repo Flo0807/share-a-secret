@@ -70,7 +70,8 @@ defmodule ShareSecret.MixProject do
       {:tailwind_formatter, "== 0.4.2", only: [:dev, :test], runtime: false},
       {:credo, "== 1.7.12", only: [:dev, :test], runtime: false},
       {:floki, "== 0.38.0", only: :test},
-      {:mox, "== 1.2.0", only: :test}
+      {:mox, "== 1.2.0", only: :test},
+      {:lazy_html, "== 0.1.3", only: :test}
     ]
   end
 
