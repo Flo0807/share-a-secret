@@ -7,6 +7,7 @@ defmodule ShareSecret.MixProject do
       version: "0.7.0",
       elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix_live_view] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
@@ -36,7 +37,7 @@ defmodule ShareSecret.MixProject do
       # Core
       {:phoenix, "== 1.7.21"},
       {:phoenix_html, "== 4.2.1"},
-      {:phoenix_live_view, "== 1.0.17"},
+      {:phoenix_live_view, "== 1.1.1"},
       {:bandit, "== 1.7.0"},
 
       # Database and Persistence
@@ -70,7 +71,8 @@ defmodule ShareSecret.MixProject do
       {:tailwind_formatter, "== 0.4.2", only: [:dev, :test], runtime: false},
       {:credo, "== 1.7.12", only: [:dev, :test], runtime: false},
       {:floki, "== 0.38.0", only: :test},
-      {:mox, "== 1.2.0", only: :test}
+      {:mox, "== 1.2.0", only: :test},
+      {:lazy_html, "== 0.1.3", only: :test}
     ]
   end
 
