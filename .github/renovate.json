@@ -10,6 +10,9 @@
   "ignorePaths": [
     "compose.example.yml"
   ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "matchManagers": [
