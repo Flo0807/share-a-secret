@@ -89,7 +89,7 @@ defmodule ShareSecretWeb do
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS
-      alias WebsiteWeb.Layouts
+      alias ShareSecretWeb.Layouts
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
