@@ -174,7 +174,7 @@ msgstr ""
 msgid "Copy secret"
 msgstr ""
 
-#: lib/share_secret_web/components/layouts/app.html.heex
+#: lib/share_secret_web/components/layouts.ex
 #, elixir-autogen, elixir-format
 msgid "powered by"
 msgstr ""
