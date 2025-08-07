@@ -38,7 +38,7 @@ const liveSocket = new LiveSocket('/live', Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
   dom: {
-    onBeforeElUpdated(from, to) {
+    onBeforeElUpdated (from, to) {
       if (from._x_dataStack) {
         window.Alpine.clone(from, to)
       }
