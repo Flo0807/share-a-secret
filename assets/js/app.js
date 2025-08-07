@@ -22,7 +22,7 @@ import 'phoenix_html'
 // Establish Phoenix Socket and LiveView configuration.
 import { Socket } from 'phoenix'
 import { LiveSocket } from 'phoenix_live_view'
-import { hooks as colocatedHooks } from 'phoenix-colocated/sample_app'
+import { hooks as colocatedHooks } from 'phoenix-colocated/share_secret'
 import topbar from 'topbar'
 import Alpine from 'alpinejs'
 import { themeChange } from 'theme-change'
@@ -38,7 +38,7 @@ const liveSocket = new LiveSocket('/live', Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
   dom: {
-    onBeforeElUpdated (from, to) {
+    onBeforeElUpdated(from, to) {
       if (from._x_dataStack) {
         window.Alpine.clone(from, to)
       }
