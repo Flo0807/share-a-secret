@@ -13,6 +13,8 @@ defmodule ShareSecretWeb.Layouts do
       </Layouts.app>
 
   """
+  slot :inner_block, required: true
+
   def app(assigns) do
     ~H"""
     <.information_modal />
@@ -21,7 +23,7 @@ defmodule ShareSecretWeb.Layouts do
     </header>
     <main class="mx-auto max-w-7xl">
       <div class="px-6 py-8">
-        {@inner_content}
+        {render_slot(@inner_block)}
       </div>
     </main>
     <footer class="mx-auto max-w-7xl pb-4 text-center">
