@@ -11,7 +11,8 @@ defmodule ShareSecret.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      gettext: [write_reference_line_numbers: false]
+      gettext: [write_reference_line_numbers: false],
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 
