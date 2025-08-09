@@ -16,7 +16,7 @@
   --color-secondary: oklch(68.011% 0.158 276.934);
 }
 
-@plugin "../js/tailwind_heroicons.js";
+@plugin "../vendor/heroicons";
 
 @variant phx-click-loading ([".phx-click-loading&", ".phx-click-loading &"]);
 @variant phx-submit-loading ([".phx-submit-loading&", ".phx-submit-loading &"]);

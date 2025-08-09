@@ -38,9 +38,7 @@ defmodule ShareSecretWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller,
-        formats: [:html, :json],
-        layouts: [html: ShareSecretWeb.Layouts]
+      use Phoenix.Controller, formats: [:html, :json]
 
       use Gettext, backend: ShareSecret.Gettext
 
@@ -52,9 +50,7 @@ defmodule ShareSecretWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView,
-        layout: {ShareSecretWeb.Layouts, :app},
-        container: {:div, class: "main-container"}
+      use Phoenix.LiveView
 
       unquote(html_helpers())
     end
@@ -91,8 +87,9 @@ defmodule ShareSecretWeb do
       # Core UI components
       import ShareSecretWeb.CoreComponents
 
-      # Shortcut for generating JS commands
+      # Common modules used in templates
       alias Phoenix.LiveView.JS
+      alias ShareSecretWeb.Layouts
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
