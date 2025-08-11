@@ -80,6 +80,9 @@ jobs:
       - name: Credo
         run: mix credo
 
+      - name: Check for unused deps
+        run: mix deps.unlock --check-unused
+
       - name: Run Tests
         run: mix test
 
