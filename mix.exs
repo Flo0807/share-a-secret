@@ -79,7 +79,7 @@ defmodule ShareSecret.MixProject do
       {:credo, "== 1.7.12", only: [:dev, :test], runtime: false},
       {:floki, "== 0.38.0", only: :test},
       {:mox, "== 1.2.0", only: :test},
-      {:lazy_html, "== 0.1.6", only: :test}
+      {:lazy_html, "== 0.1.7", only: :test}
     ]
   end
 
