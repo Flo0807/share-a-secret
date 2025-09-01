@@ -74,7 +74,7 @@ defmodule ShareSecret.MixProject do
       # Dev and Test
       {:esbuild, "== 0.10.0", runtime: Mix.env() == :dev},
       {:tailwind, "== 0.3.1", runtime: Mix.env() == :dev},
-      {:phoenix_live_reload, "== 1.6.0", only: :dev},
+      {:phoenix_live_reload, "== 1.6.1", only: :dev},
       {:tailwind_formatter, "== 0.4.2", only: [:dev, :test], runtime: false},
       {:credo, "== 1.7.12", only: [:dev, :test], runtime: false},
       {:floki, "== 0.38.0", only: :test},
