@@ -13,9 +13,9 @@ defmodule ShareSecretWeb.Browser.A11yTest do
   defp assert_a11y(session) do
     Frame.evaluate(session.frame_id, A11yAudit.JS.axe_core())
 
-    {:ok, result} = Frame.evaluate(session.frame_id, "axe.run()")
+    {:ok, json} = Frame.evaluate(session.frame_id, "axe.run()")
 
-    result
+    json
     |> A11yAudit.Results.from_json()
     |> A11yAudit.Assertions.assert_no_violations()
 
