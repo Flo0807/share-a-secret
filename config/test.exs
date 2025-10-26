@@ -28,4 +28,8 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :phoenix_test,
   endpoint: ShareSecretWeb.Endpoint,
-  otp_app: :share_secret
+  otp_app: :share_secret,
+  playwright: [
+    browser: :chromium,
+    browser_launch_timeout: 10_000
+  ]
