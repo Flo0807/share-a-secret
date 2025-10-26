@@ -58,7 +58,9 @@ defmodule ShareSecretWeb.CoreComponents do
   attr :name, :any
   attr :label, :string, default: nil
   attr :value, :any
-  attr :class, :string, default: nil
+
+  attr :class, :string, default: nil, doc: "the input class to use over defaults"
+  attr :error_class, :string, default: nil, doc: "the input error class to use over defaults"
 
   attr :type, :string,
     default: "text",
@@ -98,20 +100,21 @@ defmodule ShareSecretWeb.CoreComponents do
       end)
 
     ~H"""
-    <div>
-      <fieldset class="fieldset">
-        <legend :if={@label} class="fieldset-legend">{@label}</legend>
-        <input type="hidden" name={@name} value="false" />
-        <input
-          type="checkbox"
-          id={@id}
-          name={@name}
-          value="true"
-          checked={@checked}
-          class={["checkbox checkbox-primary", @class]}
-          {@rest}
-        />
-      </fieldset>
+    <div class="fieldset">
+      <label>
+        <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
+        <span class="label">
+          <input
+            type="checkbox"
+            id={@id}
+            name={@name}
+            value="true"
+            checked={@checked}
+            class={@class || "checkbox checkbox-sm"}
+            {@rest}
+          />{@label}
+        </span>
+      </label>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -119,19 +122,20 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def input(%{type: "select"} = assigns) do
     ~H"""
-    <div>
-      <fieldset class="fieldset">
-        <legend :if={@label} class="fieldset-legend">{@label}</legend>
+    <div class="fieldset">
+      <label>
+        <span :if={@label} class="label text-base-content mb-2">{@label}</span>
         <select
           id={@id}
           name={@name}
+          class={[@class || "select w-full", @errors != [] && (@error_class || "select-error")]}
           multiple={@multiple}
-          class={["select w-full", @class, @errors == [] && "select-bordered", @errors != [] && "select-error"]}
+          {@rest}
         >
           <option :if={@prompt} value="">{@prompt}</option>
           {Phoenix.HTML.Form.options_for_select(@options, @value)}
         </select>
-      </fieldset>
+      </label>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -139,18 +143,18 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def input(%{type: "textarea"} = assigns) do
     ~H"""
-    <div>
-      <fieldset class="fieldset">
-        <legend :if={@label} class="fieldset-legend">{@label}</legend>
+    <div class="fieldset">
+      <label>
+        <span :if={@label} class="label text-base-content mb-2">{@label}</span>
         <textarea
           id={@id}
           phx-hook="DynamicTextArea"
           name={@name}
-          class={["textarea h-[100px] w-full", @class, @errors == [] && "textarea-bordered", @errors != [] && "textarea-error"]}
+          class={[@class || "h-[100px] textarea w-full", @errors != [] && (@error_class || "textarea-error")]}
           data-min-height={100}
           {@rest}
-        ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      </fieldset>
+        >{Phoenix.HTML.Form.normalize_value("textarea", @value)}</textarea>
+      </label>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -159,18 +163,18 @@ defmodule ShareSecretWeb.CoreComponents do
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
-    <div>
-      <fieldset class="fieldset">
-        <legend :if={@label} class="fieldset-legend">{@label}</legend>
+    <div class="fieldset">
+      <label>
+        <span :if={@label} class="label text-base-content mb-2">{@label}</span>
         <input
           type={@type}
           name={@name}
           id={@id}
           value={Phoenix.HTML.Form.normalize_value(@type, @value)}
-          class={["input w-full", @class, @errors == [] && "input-bordered", @errors != [] && "input-error"]}
+          class={[@class || "input w-full", @errors != [] && (@error_class || "input-error")]}
           {@rest}
         />
-      </fieldset>
+      </label>
       <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
@@ -183,8 +187,8 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="text-error mt-3 flex gap-3 text-sm leading-6">
-      <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
+    <p class="text-error mt-1.5 flex items-center gap-2 text-sm">
+      <.icon name="hero-exclamation-circle-solid" class="size-5" />
       {render_slot(@inner_block)}
     </p>
     """
