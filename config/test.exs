@@ -32,5 +32,7 @@ config :phoenix_test,
   playwright: [
     browser: :chromium,
     browser_launch_timeout: 10_000,
-    timeout: 250
+    timeout: 250,
+    trace: System.get_env("PLAYWRIGHT_TRACE", "false") in ~w(t true),
+    trace_dir: "tmp"
   ]
