@@ -1,6 +1,8 @@
 <Layouts.app>
   <div :if={@links == []}>
-    <h1 class="mb-4 text-3xl">{gettext("Enter your secret")}</h1>
+    <label for={@form[:secret].id}>
+      <h1 class="mb-4 text-3xl">{gettext("Enter your secret")}</h1>
+    </label>
 
     <.form
       for={@form}

@@ -35,8 +35,8 @@ jobs:
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          cache: 'npm'
-          cache-dependency-path: './assets/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "./assets/package-lock.json"
           node-version: 22
 
       - name: Install npm dependencies
@@ -55,6 +55,12 @@ jobs:
             deps
             _build
           key: ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-mixlockhash-${{ env.MIX_LOCK_HASH }}
+
+      - name: Setup assets
+        run: mix assets.setup
+
+      - name: Build assets
+        run: mix assets.build
 
       - name: Install mix dependencies
         if: steps.restore-cache.outputs.cache-hit != 'true'
@@ -76,7 +82,7 @@ jobs:
 
       - name: Gettext
         run: mix gettext.extract --check-up-to-date
-        
+
       - name: Credo
         run: mix credo
 
@@ -84,7 +90,29 @@ jobs:
         run: mix deps.unlock --check-unused
 
       - name: Run Tests
-        run: mix test
+        run: "mix test --warnings-as-errors"
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('assets/package-lock.json') }}
+
+      - name: Install chromium browser
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npm exec --prefix assets playwright install chromium --with-deps --only-shell
+
+      - name: Run Playwright Tests
+        run: mix test --warnings-as-errors --only playwright || if [[ $? = 2 ]]; then PLAYWRIGHT_TRACE=true mix test --only playwright --max-cases 1 --failed; else false; fi
+
+      - name: Upload Playwright traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: tmp/
+          retention-days: 7
 
   build-push:
     name: Build and push image to ghcr
