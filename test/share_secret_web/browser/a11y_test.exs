@@ -4,6 +4,8 @@ defmodule ShareSecretWeb.Browser.A11yTest do
 
   alias PhoenixTest.Playwright.Frame
 
+  @moduletag :playwright
+
   test "index page has no accessibility violations", %{conn: conn} do
     conn
     |> visit(~p"/")

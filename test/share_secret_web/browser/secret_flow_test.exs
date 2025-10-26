@@ -7,6 +7,8 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
   alias PhoenixTest.Playwright.Frame
   alias ShareSecret.CryptoMock
 
+  @moduletag :playwright
+
   setup :verify_on_exit!
   setup :set_mox_global
 
