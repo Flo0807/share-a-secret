@@ -89,6 +89,14 @@ jobs:
       - name: Run Tests
         run: "mix test --warnings-as-errors || if [[ $? = 2 ]]; then PLAYWRIGHT_TRACE=true mix test --max-cases 1 --failed; else false; fi"
 
+      - name: Upload Playwright traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: tmp/
+          retention-days: 7
+
   build-push:
     name: Build and push image to ghcr
     runs-on: ubuntu-latest
