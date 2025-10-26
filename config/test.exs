@@ -18,10 +18,14 @@ config :share_secret, ShareSecret.Repo,
 config :share_secret, ShareSecretWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "VL0zYLW9UXhe/ij6Nn98z9LchTP7CV8/gRdESdhjLqE4l/1wg1NcACDBg7LoIARp",
-  server: false
+  server: true
 
 # Print only warnings and errors during test
 config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :phoenix_test,
+  endpoint: ShareSecretWeb.Endpoint,
+  otp_app: :share_secret
