@@ -1,48 +1,50 @@
 <Layouts.app>
-  <.form
-    :if={@links == []}
-    for={@form}
-    phx-submit="submit"
-    phx-change="validate"
-    class="flex flex-col gap-y-4"
-  >
-    <.input
-      type="textarea"
-      field={@form[:secret]}
-      label={gettext("Enter your secret here")}
-      placeholder="Secret..."
-      required
-    />
+  <div :if={@links == []}>
+    <h1 class="mb-4 text-3xl">{gettext("Enter your secret")}</h1>
 
-    <.input
-      class="input max-w-20 block w-full"
-      type="number"
-      field={@form[:link_count]}
-      label={gettext("Number of links")}
-      min="1"
-      max={@max_links}
-      required
-    />
+    <.form
+      for={@form}
+      phx-submit="submit"
+      phx-change="validate"
+      class="flex flex-col gap-y-4"
+    >
+      <.input
+        type="textarea"
+        field={@form[:secret]}
+        placeholder="Secret..."
+        required
+      />
 
-    <.input
-      class="select max-w-32 block w-full"
-      type="select"
-      field={@form[:expiration]}
-      label={gettext("Expiration")}
-      options={@expiration_options}
-      value={@expiration_default}
-      required
-    />
+      <.input
+        class="input max-w-20 block w-full"
+        type="number"
+        field={@form[:link_count]}
+        label={gettext("Number of links")}
+        min="1"
+        max={@max_links}
+        required
+      />
 
-    <button class="btn btn-primary mt-4 self-start" aria-disabled={@loading} type="submit">
-      {gettext("Generate links")}
-      <span :if={@loading} class="loading loading-spinner"></span>
-    </button>
+      <.input
+        class="select max-w-32 block w-full"
+        type="select"
+        field={@form[:expiration]}
+        label={gettext("Expiration")}
+        options={@expiration_options}
+        value={@expiration_default}
+        required
+      />
 
-    <p :if={@error} class="text-error mt-4 italic">
-      {@error}
-    </p>
-  </.form>
+      <button class="btn btn-primary mt-4 self-start" aria-disabled={@loading} type="submit">
+        {gettext("Generate links")}
+        <span :if={@loading} class="loading loading-spinner"></span>
+      </button>
+
+      <p :if={@error} class="text-error mt-4 italic">
+        {@error}
+      </p>
+    </.form>
+  </div>
 
   <div :if={@links != []}>
     <h1 class="text-3xl">{gettext("Your links")}</h1>

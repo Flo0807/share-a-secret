@@ -16,11 +16,6 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: lib/share_secret_web/live/home_live/index.html.heex
-#, elixir-autogen, elixir-format
-msgid "Enter your secret here"
-msgstr ""
-
 #: lib/share_secret_web/live/home_live/show.ex
 #, elixir-autogen, elixir-format
 msgid "Error while decrypting the secret. Please try again."
@@ -182,4 +177,9 @@ msgstr ""
 #: lib/share_secret_web/components/core_components.ex
 #, elixir-autogen, elixir-format
 msgid "More information"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Enter your secret"
 msgstr ""
