@@ -31,5 +31,6 @@ config :phoenix_test,
   otp_app: :share_secret,
   playwright: [
     browser: :chromium,
-    browser_launch_timeout: 10_000
+    browser_launch_timeout: 10_000,
+    timeout: 250
   ]
