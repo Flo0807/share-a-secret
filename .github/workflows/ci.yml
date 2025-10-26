@@ -104,7 +104,7 @@ jobs:
         run: npm exec --prefix assets playwright install chromium --with-deps --only-shell
 
       - name: Run Playwright Tests
-        run: mix test --warnings-as-errors --only playwright || if [[ $? = 2 ]]; then PLAYWRIGHT_TRACE=true mix test --only playwright --max-cases 1 --failed; else false; fi"
+        run: mix test --warnings-as-errors --only playwright || if [[ $? = 2 ]]; then PLAYWRIGHT_TRACE=true mix test --only playwright --max-cases 1 --failed; else false; fi
 
       - name: Upload Playwright traces
         if: failure()
