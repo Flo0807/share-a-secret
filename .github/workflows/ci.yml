@@ -59,6 +59,9 @@ jobs:
       - name: Setup assets
         run: mix assets.setup
 
+      - name: Build assets
+        run: mix assets.build
+
       - name: Install mix dependencies
         if: steps.restore-cache.outputs.cache-hit != 'true'
         run: mix deps.get
