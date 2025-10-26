@@ -117,7 +117,6 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
     |> visit(link_2)
     |> assert_has(".alert-error", text: "Invalid link")
     |> refute_has("button", text: "Reveal")
-
   end
 
   test "validates secret is required", %{conn: conn} do
