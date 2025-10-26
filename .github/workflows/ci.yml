@@ -35,8 +35,8 @@ jobs:
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          cache: 'npm'
-          cache-dependency-path: './assets/package-lock.json'
+          cache: "npm"
+          cache-dependency-path: "./assets/package-lock.json"
           node-version: 22
 
       - name: Install npm dependencies
@@ -76,12 +76,15 @@ jobs:
 
       - name: Gettext
         run: mix gettext.extract --check-up-to-date
-        
+
       - name: Credo
         run: mix credo
 
       - name: Check for unused deps
         run: mix deps.unlock --check-unused
+
+      - name: Install chromium browser
+        run: npm exec --prefix assets playwright install chromium --with-deps --only-shell
 
       - name: Run Tests
         run: mix test
