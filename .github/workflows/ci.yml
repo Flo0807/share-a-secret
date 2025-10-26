@@ -56,12 +56,6 @@ jobs:
             _build
           key: ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-mixlockhash-${{ env.MIX_LOCK_HASH }}
 
-      - name: Setup assets
-        run: mix assets.setup
-
-      - name: Build assets
-        run: mix assets.build
-
       - name: Install mix dependencies
         if: steps.restore-cache.outputs.cache-hit != 'true'
         run: mix deps.get
@@ -72,6 +66,12 @@ jobs:
 
       - name: Compile
         run: mix compile --warnings-as-errors --force
+
+      - name: Setup assets
+        run: mix assets.setup
+
+      - name: Build assets
+        run: mix assets.build
 
       - name: Check Formatting (Elixir)
         run: mix format --check-formatted
