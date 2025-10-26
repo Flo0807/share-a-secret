@@ -39,10 +39,6 @@ jobs:
           cache-dependency-path: "./assets/package-lock.json"
           node-version: 22
 
-      - name: Install npm dependencies
-        run: npm ci
-        working-directory: ./assets
-
       - name: Restore the deps and _build cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         id: restore-cache
@@ -55,6 +51,9 @@ jobs:
             deps
             _build
           key: ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-mixlockhash-${{ env.MIX_LOCK_HASH }}
+
+      - name: Setup assets
+        run: mix assets.setup
 
       - name: Install mix dependencies
         if: steps.restore-cache.outputs.cache-hit != 'true'
