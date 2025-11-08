@@ -67,7 +67,7 @@ defmodule ShareSecret.MixProject do
        depth: 1},
 
       # Utilities
-      {:gettext, "== 1.0.1"},
+      {:gettext, "== 1.0.2"},
       {:jason, "== 1.4.4"},
 
       # Dev and Test
