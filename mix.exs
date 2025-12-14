@@ -42,13 +42,13 @@ defmodule ShareSecret.MixProject do
   defp deps do
     [
       # Core
-      {:phoenix, "== 1.8.3"},
+      {:phoenix, "1.8.3"},
       {:phoenix_html, "4.3.0"},
-      {:phoenix_live_view, "== 1.1.19"},
-      {:bandit, "== 1.9.0"},
+      {:phoenix_live_view, "1.1.19"},
+      {:bandit, "1.9.0"},
 
       # Database and Persistence
-      {:ecto_sql, "== 3.13.3"},
+      {:ecto_sql, "3.13.3"},
       {:phoenix_ecto, "4.7.0"},
       {:postgrex, "0.21.1"},
 
@@ -73,7 +73,7 @@ defmodule ShareSecret.MixProject do
       # Dev and Test
       {:esbuild, "0.10.0", runtime: Mix.env() == :dev},
       {:tailwind, "0.4.1", runtime: Mix.env() == :dev},
-      {:phoenix_live_reload, "== 1.6.2", only: :dev},
+      {:phoenix_live_reload, "1.6.2", only: :dev},
       {:tailwind_formatter, "0.4.2", only: [:dev, :test], runtime: false},
       {:credo, "1.7.14", only: [:dev, :test], runtime: false},
       {:floki, "0.38.0", only: :test},
