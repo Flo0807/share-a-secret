@@ -27,7 +27,7 @@ config :share_secret, ShareSecretWeb.Endpoint,
 
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.27.1",
+  version: "0.27.2",
   default: [
     args:
       ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.),
