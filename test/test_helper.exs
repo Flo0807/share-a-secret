@@ -1,3 +1,5 @@
+{:ok, _} = PhoenixTest.Playwright.Supervisor.start_link()
+
 Ecto.Adapters.SQL.Sandbox.mode(ShareSecret.Repo, :manual)
 
 Mox.defmock(ShareSecret.CryptoMock, for: ShareSecret.CryptoBehaviour)
