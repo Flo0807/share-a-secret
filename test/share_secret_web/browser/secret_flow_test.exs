@@ -4,8 +4,10 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
 
   import Mox
 
-  alias PhoenixTest.Playwright.Frame
+  alias PlaywrightEx.Frame
   alias ShareSecret.CryptoMock
+
+  @timeout Application.compile_env(:phoenix_test, [:playwright, :timeout], 5_000)
 
   @moduletag :playwright
 
@@ -142,12 +144,13 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
     # Set value to 0 and trigger the input event to call LiveView validation
     Frame.evaluate(
       session.frame_id,
-      """
+      expression: """
       const input = document.querySelector('input[type=number]');
       input.value = 0;
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
-      """
+      """,
+      timeout: @timeout
     )
 
     # Should show validation error
@@ -208,14 +211,20 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
 
     # Verify the textarea contains the key parts of our special characters
     {:ok, revealed_text} =
-      Frame.evaluate(session.frame_id, "document.querySelector('#secret-text').value")
+      Frame.evaluate(session.frame_id,
+        expression: "document.querySelector('#secret-text').value",
+        timeout: @timeout
+      )
 
     assert revealed_text == secret_text
   end
 
   defp get_link_url(session, index \\ 0) do
     {:ok, link} =
-      Frame.evaluate(session.frame_id, "document.querySelector('#link-#{index}').value")
+      Frame.evaluate(session.frame_id,
+        expression: "document.querySelector('#link-#{index}').value",
+        timeout: @timeout
+      )
 
     link
   end

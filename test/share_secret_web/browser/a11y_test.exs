@@ -2,7 +2,9 @@ defmodule ShareSecretWeb.Browser.A11yTest do
   use PhoenixTest.Playwright.Case, async: true
   use ShareSecretWeb, :verified_routes
 
-  alias PhoenixTest.Playwright.Frame
+  alias PlaywrightEx.Frame
+
+  @timeout Application.compile_env(:phoenix_test, [:playwright, :timeout], 5_000)
 
   @moduletag :playwright
 
@@ -13,9 +15,9 @@ defmodule ShareSecretWeb.Browser.A11yTest do
   end
 
   defp assert_a11y(session) do
-    Frame.evaluate(session.frame_id, A11yAudit.JS.axe_core())
+    Frame.evaluate(session.frame_id, expression: A11yAudit.JS.axe_core(), timeout: @timeout)
 
-    {:ok, json} = Frame.evaluate(session.frame_id, "axe.run()")
+    {:ok, json} = Frame.evaluate(session.frame_id, expression: "axe.run()", timeout: @timeout)
 
     json
     |> A11yAudit.Results.from_json()
