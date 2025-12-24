@@ -4,7 +4,7 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
 
   import Mox
 
-  alias PhoenixTest.Playwright.Frame
+  alias PlaywrightEx.Frame
   alias ShareSecret.CryptoMock
 
   @moduletag :playwright
