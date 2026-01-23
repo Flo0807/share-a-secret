@@ -45,7 +45,7 @@ defmodule ShareSecret.MixProject do
       {:phoenix, "1.8.3"},
       {:phoenix_html, "4.3.0"},
       {:phoenix_live_view, "1.1.20"},
-      {:bandit, "== 1.10.2"},
+      {:bandit, "1.10.2"},
 
       # Database and Persistence
       {:ecto_sql, "3.13.4"},
@@ -79,7 +79,7 @@ defmodule ShareSecret.MixProject do
       {:floki, "0.38.0", only: :test},
       {:mox, "1.2.0", only: :test},
       {:lazy_html, "0.1.8", only: :test},
-      {:igniter, "== 0.7.1", only: [:dev, :test]},
+      {:igniter, "0.7.1", only: [:dev, :test]},
       {:tidewave, "0.5.4", only: [:dev]},
       {:phoenix_test, "0.9.1", only: :test, runtime: false},
       {:phoenix_test_playwright, "0.10.0", only: :test, runtime: false},
