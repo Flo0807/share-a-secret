@@ -75,7 +75,7 @@ defmodule ShareSecret.MixProject do
       {:tailwind, "0.4.1", runtime: Mix.env() == :dev},
       {:phoenix_live_reload, "1.6.2", only: :dev},
       {:tailwind_formatter, "0.4.2", only: [:dev, :test], runtime: false},
-      {:credo, "1.7.15", only: [:dev, :test], runtime: false},
+      {:credo, "== 1.7.16", only: [:dev, :test], runtime: false},
       {:floki, "0.38.0", only: :test},
       {:mox, "1.2.0", only: :test},
       {:lazy_html, "0.1.8", only: :test},
