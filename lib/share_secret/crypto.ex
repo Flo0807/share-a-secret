@@ -31,7 +31,20 @@ defmodule ShareSecret.Crypto do
   """
   def unpad(data) do
     to_remove = :binary.last(data)
-    :binary.part(data, 0, byte_size(data) - to_remove)
+    size = byte_size(data)
+
+    if to_remove < 1 or to_remove > size do
+      raise ArgumentError, "invalid padding"
+    end
+
+    padding = :binary.part(data, size - to_remove, to_remove)
+    expected_padding = :binary.copy(<<to_remove>>, to_remove)
+
+    if padding != expected_padding do
+      raise ArgumentError, "invalid padding"
+    end
+
+    :binary.part(data, 0, size - to_remove)
   end
 
   @doc """
