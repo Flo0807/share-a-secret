@@ -42,10 +42,10 @@ defmodule ShareSecret.MixProject do
   defp deps do
     [
       # Core
-      {:phoenix, "== 1.8.4"},
+      {:phoenix, "1.8.4"},
       {:phoenix_html, "4.3.0"},
-      {:phoenix_live_view, "== 1.1.25"},
-      {:bandit, "== 1.10.3"},
+      {:phoenix_live_view, "1.1.25"},
+      {:bandit, "1.10.3"},
 
       # Database and Persistence
       {:ecto_sql, "3.13.4"},
@@ -75,14 +75,14 @@ defmodule ShareSecret.MixProject do
       {:tailwind, "0.4.1", runtime: Mix.env() == :dev},
       {:phoenix_live_reload, "1.6.2", only: :dev},
       {:tailwind_formatter, "0.4.2", only: [:dev, :test], runtime: false},
-      {:credo, "== 1.7.16", only: [:dev, :test], runtime: false},
+      {:credo, "1.7.16", only: [:dev, :test], runtime: false},
       {:floki, "0.38.0", only: :test},
       {:mox, "1.2.0", only: :test},
-      {:lazy_html, "== 0.1.10", only: :test},
-      {:igniter, "== 0.7.2", only: [:dev, :test]},
-      {:tidewave, "== 0.5.5", only: [:dev]},
+      {:lazy_html, "0.1.10", only: :test},
+      {:igniter, "0.7.2", only: [:dev, :test]},
+      {:tidewave, "0.5.5", only: [:dev]},
       {:phoenix_test, "0.9.1", only: :test, runtime: false},
-      {:phoenix_test_playwright, "== 0.12.1", only: :test, runtime: false},
+      {:phoenix_test_playwright, "0.12.1", only: :test, runtime: false},
       {:a11y_audit, "0.3.1", only: :test}
     ]
   end
