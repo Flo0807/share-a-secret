@@ -43,19 +43,19 @@ defmodule ShareSecret.MixProject do
     [
       # Core
       {:phoenix, "== 1.8.4"},
-      {:phoenix_html, "4.3.0"},
+      {:phoenix_html, "== 4.3.0"},
       {:phoenix_live_view, "== 1.1.25"},
       {:bandit, "== 1.10.3"},
 
       # Database and Persistence
-      {:ecto_sql, "3.13.4"},
-      {:phoenix_ecto, "4.7.0"},
-      {:postgrex, "0.22.0"},
+      {:ecto_sql, "== 3.13.4"},
+      {:phoenix_ecto, "== 4.7.0"},
+      {:postgrex, "== 0.22.0"},
 
       # Monitoring and Telemetry
-      {:phoenix_live_dashboard, "0.8.7"},
-      {:telemetry_metrics, "1.1.0"},
-      {:telemetry_poller, "1.3.0"},
+      {:phoenix_live_dashboard, "== 0.8.7"},
+      {:telemetry_metrics, "== 1.1.0"},
+      {:telemetry_poller, "== 1.3.0"},
 
       # UI
       {:heroicons,
@@ -67,23 +67,23 @@ defmodule ShareSecret.MixProject do
        depth: 1},
 
       # Utilities
-      {:gettext, "1.0.2"},
-      {:jason, "1.4.4"},
+      {:gettext, "== 1.0.2"},
+      {:jason, "== 1.4.4"},
 
       # Dev and Test
-      {:esbuild, "0.10.0", runtime: Mix.env() == :dev},
-      {:tailwind, "0.4.1", runtime: Mix.env() == :dev},
-      {:phoenix_live_reload, "1.6.2", only: :dev},
-      {:tailwind_formatter, "0.4.2", only: [:dev, :test], runtime: false},
+      {:esbuild, "== 0.10.0", runtime: Mix.env() == :dev},
+      {:tailwind, "== 0.4.1", runtime: Mix.env() == :dev},
+      {:phoenix_live_reload, "== 1.6.2", only: :dev},
+      {:tailwind_formatter, "== 0.4.2", only: [:dev, :test], runtime: false},
       {:credo, "== 1.7.16", only: [:dev, :test], runtime: false},
-      {:floki, "0.38.0", only: :test},
-      {:mox, "1.2.0", only: :test},
+      {:floki, "== 0.38.0", only: :test},
+      {:mox, "== 1.2.0", only: :test},
       {:lazy_html, "== 0.1.10", only: :test},
       {:igniter, "== 0.7.2", only: [:dev, :test]},
       {:tidewave, "== 0.5.5", only: [:dev]},
-      {:phoenix_test, "0.9.1", only: :test, runtime: false},
+      {:phoenix_test, "== 0.9.1", only: :test, runtime: false},
       {:phoenix_test_playwright, "== 0.12.1", only: :test, runtime: false},
-      {:a11y_audit, "0.3.1", only: :test}
+      {:a11y_audit, "== 0.3.1", only: :test}
     ]
   end
 
