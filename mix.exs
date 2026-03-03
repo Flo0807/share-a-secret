@@ -48,7 +48,7 @@ defmodule ShareSecret.MixProject do
       {:bandit, "== 1.10.3"},
 
       # Database and Persistence
-      {:ecto_sql, "== 3.13.4"},
+      {:ecto_sql, "== 3.13.5"},
       {:phoenix_ecto, "== 4.7.0"},
       {:postgrex, "== 0.22.0"},
 
