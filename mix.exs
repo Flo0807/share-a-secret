@@ -82,7 +82,7 @@ defmodule ShareSecret.MixProject do
       {:igniter, "== 0.8.1", only: [:dev, :test]},
       {:tidewave, "== 0.5.6", only: [:dev]},
       {:phoenix_test, "== 0.11.1", only: :test, runtime: false},
-      {:phoenix_test_playwright, "== 0.14.0", only: :test, runtime: false},
+      {:phoenix_test_playwright, "== 0.15.0", only: :test, runtime: false},
       {:a11y_audit, "== 0.4.1", only: :test}
     ]
   end
