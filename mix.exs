@@ -80,7 +80,7 @@ defmodule ShareSecret.MixProject do
       {:mox, "== 1.2.0", only: :test},
       {:lazy_html, "== 0.1.12", only: :test},
       {:igniter, "== 0.8.3", only: [:dev, :test]},
-      {:tidewave, "== 0.8.1", only: [:dev]},
+      {:tidewave, "== 0.8.2", only: [:dev]},
       {:phoenix_test, "== 0.12.1", only: :test, runtime: false},
       {:phoenix_test_playwright, "== 0.15.0", only: :test, runtime: false},
       {:a11y_audit, "== 0.4.1", only: :test}
