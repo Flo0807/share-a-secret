@@ -5,23 +5,38 @@
 
   <.alert :if={@error} id="invalid-link-error" class="mt-4" type={:error} text={@error} />
 
-  <div :if={!@error && @mode == :client} class="mt-4">
+  <div
+    :if={!@error && @mode == :client}
+    id="reveal-secret-root"
+    class="mt-4"
+    phx-hook="SecretReveal"
+    phx-update="ignore"
+    data-secret-id={@id}
+  >
     <.alert
+      id="reveal-secret-notice"
       type={:info}
       text={
         gettext(
           "Once you have revealed the secret, you will no longer be able to access it using this URL."
         )
       }
+      data-secret-reveal-target="notice"
     />
 
-    <div
-      id="reveal-secret-root"
-      class="mt-6"
-      phx-hook="SecretReveal"
-      phx-update="ignore"
-      data-secret-id={@id}
-    >
+    <.alert
+      id="reveal-secret-error"
+      type={:error}
+      text={
+        gettext(
+          "Unable to reveal this secret. The link may be invalid, expired, or already used."
+        )
+      }
+      data-secret-reveal-target="error"
+      hidden
+    />
+
+    <div class="mt-6">
       <button
         id="reveal-secret-button"
         class="btn btn-primary"
@@ -37,19 +52,6 @@
           hidden
         ></span>
       </button>
-
-      <.alert
-        id="reveal-secret-error"
-        class="mt-4"
-        type={:error}
-        text={
-          gettext(
-            "Unable to reveal this secret. The link may be invalid, expired, or already used."
-          )
-        }
-        data-secret-reveal-target="error"
-        hidden
-      />
 
       <div id="secret-output" data-secret-reveal-target="output" hidden>
         <textarea

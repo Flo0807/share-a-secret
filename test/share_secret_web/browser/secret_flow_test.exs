@@ -104,6 +104,7 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
     |> visit(wrong_link)
     |> click_button("Reveal")
     |> assert_has("#reveal-secret-error:not([hidden])")
+    |> refute_has("#reveal-secret-notice:not([hidden])")
 
     session =
       session

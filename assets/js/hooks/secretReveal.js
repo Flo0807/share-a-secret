@@ -9,6 +9,7 @@ import { takeSecretFragment } from '../secretFragment.js'
 
 export default {
   mounted () {
+    this.notice = this.el.querySelector('[data-secret-reveal-target="notice"]')
     this.button = this.el.querySelector('[data-secret-reveal-target="button"]')
     this.loading = this.el.querySelector('[data-secret-reveal-target="loading"]')
     this.error = this.el.querySelector('[data-secret-reveal-target="error"]')
@@ -31,7 +32,7 @@ export default {
   },
 
   async reveal () {
-    this.error.hidden = true
+    this.hideError()
     this.setLoading(true)
 
     try {
@@ -63,6 +64,12 @@ export default {
   },
 
   showError () {
+    this.notice.hidden = true
     this.error.hidden = false
+  },
+
+  hideError () {
+    this.notice.hidden = false
+    this.error.hidden = true
   }
 }
