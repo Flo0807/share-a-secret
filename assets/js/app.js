@@ -24,12 +24,8 @@ import { Socket } from 'phoenix'
 import { LiveSocket } from 'phoenix_live_view'
 import { hooks as colocatedHooks } from 'phoenix-colocated/share_secret'
 import topbar from 'topbar'
-import Alpine from 'alpinejs'
 import { themeChange } from 'theme-change'
 import * as Hooks from './hooks/index'
-
-window.Alpine = Alpine
-Alpine.start()
 
 // The script is deferred, so the server-rendered theme controls are already in
 // the DOM. theme-change v3 can be initialized repeatedly and only binds each
@@ -40,13 +36,6 @@ const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute
 const liveSocket = new LiveSocket('/live', Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
-  dom: {
-    onBeforeElUpdated (from, to) {
-      if (from._x_dataStack) {
-        window.Alpine.clone(from, to)
-      }
-    }
-  },
   hooks: { ...Hooks, ...colocatedHooks }
 })
 

@@ -26,6 +26,7 @@
       ><%= @secret %></textarea>
       <.copy_to_clipboard
         :if={@secret}
+        id="copy-secret"
         class="btn btn-neutral mt-6"
         aria-label={gettext("Copy secret")}
         clipboard_element_id="secret-text"
