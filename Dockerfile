@@ -18,7 +18,7 @@ FROM ${BUILDER_IMAGE} AS builder
 
 # install build dependencies
 RUN apt-get update && apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_24.x | bash -
 RUN apt-get install -y nodejs git build-essential
 RUN apt-get clean && rm -f /var/lib/apt/lists/*_*
 
