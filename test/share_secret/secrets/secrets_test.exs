@@ -169,6 +169,27 @@ defmodule ShareSecret.SecretsTest do
       assert {:error, :not_found} = Secrets.claim_encrypted_secret(id, encode(claim_key))
     end
 
+    test "allows exactly one of two concurrent claimants to consume the secret" do
+      claim_key = :crypto.strong_rand_bytes(32)
+      entry = encrypted_entry(claim_key: claim_key)
+      assert {:ok, [id]} = Secrets.create_encrypted_secrets([entry], 3600)
+
+      claimants =
+        for _index <- 1..2 do
+          Task.async(fn ->
+            receive do
+              :claim -> Secrets.claim_encrypted_secret(id, encode(claim_key))
+            end
+          end)
+        end
+
+      Enum.each(claimants, &send(&1.pid, :claim))
+      results = Enum.map(claimants, &Task.await/1)
+
+      assert Enum.count(results, &match?({:ok, _claimed}, &1)) == 1
+      assert Enum.count(results, &match?({:error, :not_found}, &1)) == 1
+    end
+
     test "wrong or malformed claims do not consume the secret" do
       claim_key = :crypto.strong_rand_bytes(32)
       entry = encrypted_entry(claim_key: claim_key)

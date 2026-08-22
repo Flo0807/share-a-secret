@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import {
+  IV_BYTES,
   MAX_SECRET_BYTES,
   base64UrlDecode,
   base64UrlEncode,
@@ -82,6 +83,10 @@ describe('v1 encryption protocol', () => {
     assert.notEqual(first.root, second.root)
     assert.notEqual(first.claimVerifier, second.claimVerifier)
     assert.notEqual(first.payload, second.payload)
+
+    const firstIv = base64UrlDecode(first.payload).slice(1, 1 + IV_BYTES)
+    const secondIv = base64UrlDecode(second.payload).slice(1, 1 + IV_BYTES)
+    assert.notDeepEqual(firstIv, secondIv)
   })
 })
 

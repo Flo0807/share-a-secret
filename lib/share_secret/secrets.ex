@@ -54,32 +54,29 @@ defmodule ShareSecret.Secrets do
   end
 
   @doc """
+  Returns the format of an unexpired secret without exposing its contents.
+  """
+  def available_format(id) do
+    if uuid?(id) do
+      Secret
+      |> where(
+        [secret],
+        secret.id == ^id and
+          secret.expires_at > fragment("timezone('UTC', CURRENT_TIMESTAMP)")
+      )
+      |> select([secret], secret.format_version)
+      |> Repo.one()
+    end
+  end
+
+  @doc """
   Reveals a secret.
   """
   def reveal!(id, key) do
     if uuid?(id) do
-      Repo.transaction(fn ->
-        query =
-          from secret in Secret,
-            where:
-              secret.id == ^id and secret.format_version == 0 and
-                secret.expires_at > fragment("timezone('UTC', CURRENT_TIMESTAMP)"),
-            lock: "FOR UPDATE"
-
-        case Repo.one(query) do
-          %{secret: encrypted_secret} = item ->
-            plaintext = crypto_impl().decrypt!(encrypted_secret, key)
-            Repo.delete!(item)
-            {:ok, plaintext}
-
-          nil ->
-            {:error, :not_found}
-        end
-      end)
-      |> case do
-        {:ok, result} -> result
-        {:error, reason} -> {:error, reason}
-      end
+      id
+      |> reveal_legacy_transaction(key)
+      |> unwrap_transaction()
     else
       {:error, :not_found}
     end
@@ -94,25 +91,7 @@ defmodule ShareSecret.Secrets do
          :ok <- validate_expiration(expiration),
          {:ok, changesets} <- encrypted_changesets(entries, expiration),
          :ok <- validate_unique_ids(changesets) do
-      multi =
-        changesets
-        |> Enum.with_index()
-        |> Enum.reduce(Ecto.Multi.new(), fn {changeset, index}, multi ->
-          Ecto.Multi.insert(multi, {:secret, index}, changeset)
-        end)
-
-      case Repo.transaction(multi) do
-        {:ok, results} ->
-          ids =
-            for index <- 0..(length(changesets) - 1) do
-              results |> Map.fetch!({:secret, index}) |> Map.fetch!(:id)
-            end
-
-          {:ok, ids}
-
-        {:error, _operation, _reason, _changes} ->
-          {:error, :invalid}
-      end
+      insert_encrypted_changesets(changesets)
     end
   end
 
@@ -211,25 +190,9 @@ defmodule ShareSecret.Secrets do
 
     entries
     |> Enum.reduce_while({:ok, []}, fn entry, {:ok, changesets} ->
-      with {:ok, id} <- entry |> fetch_value("id", :id) |> cast_uuid(),
-           {:ok, payload} <- entry |> fetch_value("payload", :payload) |> decode_envelope(),
-           {:ok, claim_verifier} <-
-             entry |> fetch_value("claim_verifier", :claim_verifier) |> decode_canonical(32) do
-        secret = %Secret{id: id, format_version: 1, expires_at: expires_at}
-
-        changeset =
-          Secret.encrypted_changeset(secret, %{
-            encrypted_payload: payload,
-            claim_verifier: claim_verifier
-          })
-
-        if changeset.valid? do
-          {:cont, {:ok, [changeset | changesets]}}
-        else
-          {:halt, {:error, :invalid}}
-        end
-      else
-        _invalid -> {:halt, {:error, :invalid}}
+      case encrypted_changeset(entry, expires_at) do
+        {:ok, changeset} -> {:cont, {:ok, [changeset | changesets]}}
+        {:error, :invalid} -> {:halt, {:error, :invalid}}
       end
     end)
     |> case do
@@ -237,6 +200,74 @@ defmodule ShareSecret.Secrets do
       error -> error
     end
   end
+
+  defp encrypted_changeset(entry, expires_at) do
+    with {:ok, id} <- entry |> fetch_value("id", :id) |> cast_uuid(),
+         {:ok, payload} <- entry |> fetch_value("payload", :payload) |> decode_envelope(),
+         {:ok, claim_verifier} <-
+           entry |> fetch_value("claim_verifier", :claim_verifier) |> decode_canonical(32) do
+      secret = %Secret{id: id, format_version: 1, expires_at: expires_at}
+
+      secret
+      |> Secret.encrypted_changeset(%{
+        encrypted_payload: payload,
+        claim_verifier: claim_verifier
+      })
+      |> valid_changeset()
+    else
+      _invalid -> {:error, :invalid}
+    end
+  end
+
+  defp valid_changeset(%{valid?: true} = changeset), do: {:ok, changeset}
+  defp valid_changeset(_changeset), do: {:error, :invalid}
+
+  defp insert_encrypted_changesets(changesets) do
+    changesets
+    |> Enum.with_index()
+    |> Enum.reduce(Ecto.Multi.new(), fn {changeset, index}, multi ->
+      Ecto.Multi.insert(multi, {:secret, index}, changeset)
+    end)
+    |> Repo.transaction()
+    |> encrypted_transaction_result(length(changesets))
+  end
+
+  defp encrypted_transaction_result({:ok, results}, count) do
+    ids =
+      for index <- 0..(count - 1) do
+        results |> Map.fetch!({:secret, index}) |> Map.fetch!(:id)
+      end
+
+    {:ok, ids}
+  end
+
+  defp encrypted_transaction_result({:error, _operation, _reason, _changes}, _count) do
+    {:error, :invalid}
+  end
+
+  defp reveal_legacy_transaction(id, key) do
+    Repo.transaction(fn ->
+      query =
+        from secret in Secret,
+          where:
+            secret.id == ^id and secret.format_version == 0 and
+              secret.expires_at > fragment("timezone('UTC', CURRENT_TIMESTAMP)"),
+          lock: "FOR UPDATE"
+
+      reveal_locked_legacy(Repo.one(query), key)
+    end)
+  end
+
+  defp reveal_locked_legacy(%{secret: encrypted_secret} = item, key) do
+    plaintext = crypto_impl().decrypt!(encrypted_secret, key)
+    Repo.delete!(item)
+    {:ok, plaintext}
+  end
+
+  defp reveal_locked_legacy(nil, _key), do: {:error, :not_found}
+
+  defp unwrap_transaction({:ok, result}), do: result
+  defp unwrap_transaction({:error, reason}), do: {:error, reason}
 
   defp decode_envelope(value) do
     with true <- is_binary(value) and byte_size(value) <= @maximum_encoded_envelope_bytes,

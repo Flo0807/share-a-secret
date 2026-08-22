@@ -87,6 +87,16 @@ defmodule ShareSecretWeb.HomeLiveTest do
     assert Repo.get(Secret, id)
   end
 
+  test "a query parameter cannot force a v1 secret into legacy mode", %{conn: conn} do
+    entry = encrypted_entry()
+    assert {:ok, [id]} = Secrets.create_encrypted_secrets([entry], 3600)
+
+    {:ok, view, _html} = live(conn, ~p"/#{id}?key=attacker-added")
+
+    assert has_element?(view, "#reveal-secret-root")
+    refute has_element?(view, "#reveal-legacy-secret-button")
+  end
+
   test "legacy query-key links remain revealable during migration", %{conn: conn} do
     secret =
       Repo.insert!(%Secret{

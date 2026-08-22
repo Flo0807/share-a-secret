@@ -1,7 +1,7 @@
 defmodule ShareSecret.Repo.Migrations.AddClientEncryptionFields do
   use Ecto.Migration
 
-  def change do
+  def up do
     alter table(:secrets) do
       modify :secret, :text, null: true, from: {:text, null: false}
       add :format_version, :smallint, null: false, default: 0
@@ -32,5 +32,10 @@ defmodule ShareSecret.Repo.Migrations.AddClientEncryptionFields do
            )
 
     create constraint(:secrets, :secrets_positive_lifetime, check: "expires_at > inserted_at")
+  end
+
+  def down do
+    raise Ecto.MigrationError,
+          "client-encrypted rows cannot be rolled back without destroying active secrets"
   end
 end

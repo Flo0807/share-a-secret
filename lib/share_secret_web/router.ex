@@ -6,7 +6,7 @@ defmodule ShareSecretWeb.Router do
     "content-security-policy" =>
       "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; " <>
         "script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; " <>
-        "font-src 'self'; connect-src 'self' ws: wss:; object-src 'none'",
+        "font-src 'self'; connect-src 'self'; object-src 'none'",
     "cross-origin-opener-policy" => "same-origin",
     "cross-origin-resource-policy" => "same-origin",
     "permissions-policy" => "camera=(), microphone=(), geolocation=(), payment=(), usb=()",

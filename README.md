@@ -66,7 +66,7 @@ Run the migrations:
 /app/bin/migrate
 ```
 
-You can now access the application at configured host and port. We recommend using a reverse proxy like nginx to add SSL encryption.
+You can now access the application through HTTPS. Production releases fail closed by redirecting HTTP to HTTPS. If a trusted reverse proxy terminates TLS, set `TRUST_PROXY_HEADERS=true` only when the application port is not publicly reachable and the proxy strips client-supplied forwarding headers. Do not expose the container's plain HTTP port directly: anyone who can modify the delivered JavaScript can capture every secret and link root.
 
 ## Development
 

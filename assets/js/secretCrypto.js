@@ -107,20 +107,24 @@ export async function createEncryptedSecret (secret, options = {}) {
 
   try {
     const { encryptionKey, claimKey } = await deriveKeys(root, id)
-    const ciphertext = new Uint8Array(await crypto.subtle.encrypt({
-      name: 'AES-GCM',
-      iv,
-      additionalData: additionalData(id),
-      tagLength: TAG_BYTES * 8
-    }, encryptionKey, plaintext))
-    const envelope = concatenate(Uint8Array.of(PROTOCOL_VERSION), iv, ciphertext)
-    const claimVerifier = new Uint8Array(await crypto.subtle.digest('SHA-256', claimKey))
+    try {
+      const ciphertext = new Uint8Array(await crypto.subtle.encrypt({
+        name: 'AES-GCM',
+        iv,
+        additionalData: additionalData(id),
+        tagLength: TAG_BYTES * 8
+      }, encryptionKey, plaintext))
+      const envelope = concatenate(Uint8Array.of(PROTOCOL_VERSION), iv, ciphertext)
+      const claimVerifier = new Uint8Array(await crypto.subtle.digest('SHA-256', claimKey))
 
-    return {
-      id,
-      payload: base64UrlEncode(envelope),
-      claimVerifier: base64UrlEncode(claimVerifier),
-      root: base64UrlEncode(root)
+      return {
+        id,
+        payload: base64UrlEncode(envelope),
+        claimVerifier: base64UrlEncode(claimVerifier),
+        root: base64UrlEncode(root)
+      }
+    } finally {
+      claimKey.fill(0)
     }
   } finally {
     plaintext.fill(0)
@@ -133,7 +137,11 @@ export async function deriveClaimKey (id, root) {
 
   try {
     const { claimKey } = await deriveKeys(rootBytes, id)
-    return base64UrlEncode(claimKey)
+    try {
+      return base64UrlEncode(claimKey)
+    } finally {
+      claimKey.fill(0)
+    }
   } finally {
     rootBytes.fill(0)
   }
@@ -142,22 +150,23 @@ export async function deriveClaimKey (id, root) {
 export async function decryptEncryptedSecret (id, encodedEnvelope, root) {
   assertSecretId(id)
   const rootBytes = normalizeRoot(root)
-  const envelope = base64UrlDecode(encodedEnvelope)
-
-  if (
-    envelope.length < 1 + IV_BYTES + TAG_BYTES ||
-    envelope.length > MAX_ENVELOPE_BYTES ||
-    envelope[0] !== PROTOCOL_VERSION
-  ) {
-    rootBytes.fill(0)
-    envelope.fill(0)
-    throw new Error('invalid encrypted envelope')
-  }
-
-  const iv = envelope.slice(1, 1 + IV_BYTES)
-  const ciphertext = envelope.slice(1 + IV_BYTES)
+  let envelope
+  let iv
+  let ciphertext
 
   try {
+    envelope = base64UrlDecode(encodedEnvelope)
+
+    if (
+      envelope.length < 1 + IV_BYTES + TAG_BYTES ||
+      envelope.length > MAX_ENVELOPE_BYTES ||
+      envelope[0] !== PROTOCOL_VERSION
+    ) {
+      throw new Error('invalid encrypted envelope')
+    }
+
+    iv = envelope.slice(1, 1 + IV_BYTES)
+    ciphertext = envelope.slice(1 + IV_BYTES)
     const { encryptionKey } = await deriveKeys(rootBytes, id)
     const plaintext = new Uint8Array(await crypto.subtle.decrypt({
       name: 'AES-GCM',
@@ -173,9 +182,9 @@ export async function decryptEncryptedSecret (id, encodedEnvelope, root) {
     }
   } finally {
     rootBytes.fill(0)
-    envelope.fill(0)
-    iv.fill(0)
-    ciphertext.fill(0)
+    clearBytes(envelope)
+    clearBytes(iv)
+    clearBytes(ciphertext)
   }
 }
 

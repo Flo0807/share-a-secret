@@ -11,16 +11,21 @@ ARG OTP_VERSION=29.0.5
 # renovate: datasource=docker depName=ubuntu versioning=ubuntu
 ARG UBUNTU_VERSION=resolute-20260811.1
 
-ARG BUILDER_IMAGE=hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-${UBUNTU_VERSION}
-ARG RUNNER_IMAGE=ubuntu:${UBUNTU_VERSION}
+ARG BUILDER_IMAGE=hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-${UBUNTU_VERSION}@sha256:2431278a45d8aa9e019202ee73fc50eed21df9b456c4b72ed09b37550b04069b
+ARG RUNNER_IMAGE=ubuntu:${UBUNTU_VERSION}@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b
+ARG NODE_IMAGE=node:24.19.0-bookworm-slim@sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03
+
+FROM ${NODE_IMAGE} AS node_runtime
 
 FROM ${BUILDER_IMAGE} AS builder
 
 # install build dependencies
-RUN apt-get update && apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_24.x | bash -
-RUN apt-get install -y nodejs git build-essential
+RUN apt-get update && apt-get install -y git build-essential
 RUN apt-get clean && rm -f /var/lib/apt/lists/*_*
+
+COPY --from=node_runtime /usr/local/bin/node /usr/local/bin/node
+COPY --from=node_runtime /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 # prepare build dir
 WORKDIR /app
@@ -51,7 +56,7 @@ COPY lib lib
 
 COPY assets assets
 
-RUN npm install --prefix ./assets
+RUN npm ci --prefix ./assets
 
 # Compile the release
 RUN mix compile

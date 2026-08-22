@@ -2,6 +2,7 @@ defmodule ShareSecretWeb.HomeLive.Index do
   use ShareSecretWeb, :live_view
 
   alias ShareSecret.Secrets
+  alias ShareSecret.RateLimiter
 
   @max_links 10
   @expiration_options [
@@ -29,6 +30,7 @@ defmodule ShareSecretWeb.HomeLive.Index do
      |> assign(:max_links, @max_links)
      |> assign(:expiration_options, @expiration_options)
      |> assign(:expiration_default, @expiration_default)
+     |> assign(:rate_limit_key, rate_limit_key(socket))
      |> assign(:form, form)}
   end
 
@@ -39,13 +41,13 @@ defmodule ShareSecretWeb.HomeLive.Index do
         socket
       )
       when is_list(entries) and is_integer(expiration) and map_size(params) == 2 do
-    if Enum.all?(entries, &valid_entry?/1) do
-      case Secrets.create_encrypted_secrets(entries, expiration) do
-        {:ok, _ids} -> {:reply, %{ok: true}, socket}
-        {:error, :invalid} -> {:reply, %{ok: false, reason: "invalid_request"}, socket}
-      end
+    with true <- RateLimiter.allow?(socket.assigns.rate_limit_key, rate_limit_cost(entries)),
+         true <- Enum.all?(entries, &valid_entry?/1),
+         {:ok, _ids} <- Secrets.create_encrypted_secrets(entries, expiration) do
+      {:reply, %{ok: true}, socket}
     else
-      {:reply, %{ok: false, reason: "invalid_request"}, socket}
+      _rate_limited_or_invalid ->
+        {:reply, %{ok: false, reason: "invalid_request"}, socket}
     end
   end
 
@@ -58,4 +60,33 @@ defmodule ShareSecretWeb.HomeLive.Index do
   end
 
   defp valid_entry?(_entry), do: false
+
+  defp rate_limit_cost(entries), do: entries |> length() |> max(1) |> min(@max_links)
+
+  defp rate_limit_key(socket) do
+    identity = trusted_forwarded_for(socket) || peer_address(socket) || "unknown"
+    :crypto.hash(:sha256, :erlang.term_to_binary(identity))
+  end
+
+  defp trusted_forwarded_for(socket) do
+    if Application.get_env(:share_secret, :trust_proxy_headers, false) do
+      socket
+      |> get_connect_info(:x_headers)
+      |> List.wrap()
+      |> Enum.find_value(fn
+        {"x-forwarded-for", value} ->
+          value |> String.split(",", parts: 2) |> hd() |> String.trim()
+
+        _header ->
+          nil
+      end)
+    end
+  end
+
+  defp peer_address(socket) do
+    case get_connect_info(socket, :peer_data) do
+      %{address: address} -> address
+      _missing -> nil
+    end
+  end
 end

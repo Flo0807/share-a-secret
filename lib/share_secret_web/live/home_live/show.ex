@@ -57,31 +57,38 @@ defmodule ShareSecretWeb.HomeLive.Show do
   end
 
   defp assign_defaults(socket, %{"id" => id, "key" => key}) do
-    if Secrets.exists?(id) do
-      socket
-      |> assign(:error, nil)
-      |> assign(:secret, nil)
-      |> assign(:id, id)
-      |> assign(:key, key)
-      |> assign(:mode, :legacy)
-    else
-      assign_invalid_link(socket)
+    case Secrets.available_format(id) do
+      1 -> assign_client_link(socket, id)
+      0 -> assign_legacy_link(socket, id, key)
+      nil -> assign_invalid_link(socket)
     end
   end
 
   defp assign_defaults(socket, %{"id" => id}) do
-    if Secrets.exists?(id) do
-      socket
-      |> assign(:error, nil)
-      |> assign(:secret, nil)
-      |> assign(:id, id)
-      |> assign(:mode, :client)
-    else
-      assign_invalid_link(socket)
+    case Secrets.available_format(id) do
+      1 -> assign_client_link(socket, id)
+      _legacy_or_missing -> assign_invalid_link(socket)
     end
   end
 
   defp assign_defaults(socket, _params), do: assign_invalid_link(socket)
+
+  defp assign_client_link(socket, id) do
+    socket
+    |> assign(:error, nil)
+    |> assign(:secret, nil)
+    |> assign(:id, id)
+    |> assign(:mode, :client)
+  end
+
+  defp assign_legacy_link(socket, id, key) do
+    socket
+    |> assign(:error, nil)
+    |> assign(:secret, nil)
+    |> assign(:id, id)
+    |> assign(:key, key)
+    |> assign(:mode, :legacy)
+  end
 
   defp assign_invalid_link(socket) do
     socket

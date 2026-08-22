@@ -15,6 +15,10 @@ The server can observe record size, creation time, expiration, public ID, creati
 
 This design does not make a hosted web application fully trustless. Whoever controls the JavaScript delivered to a browser can change it to capture plaintext or the fragment root. Browser extensions, clipboard managers, browser history, link previews, and compromised endpoints can also disclose a link or plaintext. Production deployments therefore require HTTPS/HSTS, the checked-in Content Security Policy, no third-party scripts or analytics, pinned dependencies, reviewed builds, and prompt security updates.
 
+The application trusts `X-Forwarded-Proto` only when `TRUST_PROXY_HEADERS=true`. Enable that setting solely behind a trusted proxy which strips client-supplied forwarding headers and prevents direct access to the application port. The LiveView long-poll fallback is disabled so its larger transport body limit cannot bypass the WebSocket frame cap.
+
+Creation is limited per client address and per application instance, with a bounded in-memory limiter, in addition to the ten-record batch and one-megabyte WebSocket limits. Internet-facing deployments should also enforce distributed rate and storage quotas at their trusted edge; an in-process limiter cannot provide a global quota across a cluster or defend against a botnet.
+
 ## Cryptographic construction
 
 All byte generation uses `crypto.getRandomValues`. All cryptographic operations use the browser's native Web Crypto API.
@@ -48,6 +52,8 @@ The consume-before-return policy provides at-most-once delivery. A process crash
 ## Legacy migration
 
 Rows created by older releases are version 0. Their links use a query-string key and are decrypted server-side. Version 0 reveal is isolated to a row-locked legacy path and cannot reveal version 1 rows. New creation uses only version 1. Legacy support can be removed after the longest previously supported expiry has elapsed from the production rollout.
+
+The schema migration is intentionally forward-only. Rolling it back after a version 1 row exists would require either deleting active client-encrypted secrets or restoring a server-readable plaintext column, neither of which is a safe automatic operation. Roll application code forward if a deployment must be recovered.
 
 ## Required verification
 
