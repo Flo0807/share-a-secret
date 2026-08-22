@@ -20,6 +20,7 @@ export default {
 
     try {
       this.root = parseRootFragment(takeSecretFragment() || '')
+      this.showNotice()
       this.button.disabled = false
     } catch (_error) {
       this.showError()
@@ -32,7 +33,7 @@ export default {
   },
 
   async reveal () {
-    this.hideError()
+    this.showNotice()
     this.setLoading(true)
 
     try {
@@ -68,7 +69,7 @@ export default {
     this.error.hidden = false
   },
 
-  hideError () {
+  showNotice () {
     this.notice.hidden = false
     this.error.hidden = true
   }

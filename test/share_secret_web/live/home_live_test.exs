@@ -62,7 +62,7 @@ defmodule ShareSecretWeb.HomeLiveTest do
     {:ok, view, _html} = live(conn, ~p"/#{id}")
 
     assert has_element?(view, "#reveal-secret-root[phx-hook='SecretReveal'][phx-update='ignore']")
-    assert has_element?(view, "#reveal-secret-notice:not([hidden])")
+    assert has_element?(view, "#reveal-secret-notice[hidden]")
     assert has_element?(view, "#reveal-secret-error[hidden]")
     assert has_element?(view, "#reveal-secret-button[disabled]")
     assert has_element?(view, "#secret-output[hidden] #secret-text:empty")

@@ -41,6 +41,7 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
       session
       |> visit(secret_link)
       |> assert_has("#reveal-secret-root")
+      |> assert_has("#reveal-secret-notice:not([hidden])")
 
     assert evaluate_js(session, "window.location.hash") == ""
     refute_frames_contain(session, [secret_text, root])
