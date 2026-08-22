@@ -16,115 +16,46 @@ defmodule ShareSecretWeb.HomeLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    changeset = change()
+    form =
+      %{
+        "secret" => "",
+        "link_count" => "1",
+        "expiration" => Integer.to_string(@expiration_default)
+      }
+      |> to_form(as: :create_links_form)
 
-    socket =
-      socket
-      |> assign(:max_links, @max_links)
-      |> assign(:expiration_options, @expiration_options)
-      |> assign(:expiration_default, @expiration_default)
-      |> assign(:error, nil)
-      |> assign(:loading, false)
-      |> assign(:links, [])
-      |> assign_form(changeset)
-
-    {:ok, socket}
+    {:ok,
+     socket
+     |> assign(:max_links, @max_links)
+     |> assign(:expiration_options, @expiration_options)
+     |> assign(:expiration_default, @expiration_default)
+     |> assign(:form, form)}
   end
 
   @impl Phoenix.LiveView
-  def handle_params(_params, uri, socket) do
-    %{scheme: scheme, authority: authority} = URI.parse(uri)
-
-    link_url = "#{scheme}://#{authority}/:id?key=:key"
-    socket = assign(socket, :link_url, link_url)
-
-    {:noreply, socket}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("validate", %{"create_links_form" => params}, socket) do
-    changeset = params |> change() |> Map.put(:action, :validate)
-    socket = assign_form(socket, changeset)
-
-    {:noreply, socket}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("submit", %{"create_links_form" => params}, socket) do
-    result = params |> change() |> Ecto.Changeset.apply_action(:validate)
-
-    socket =
-      case result do
-        {:ok, opts} ->
-          send(self(), {:generate_links, opts})
-
-          socket
-          |> assign(:error, nil)
-          |> assign(:loading, true)
-
-        {:error, changeset} ->
-          socket
-          |> assign(:error, gettext("Invalid form data."))
-          |> assign_form(changeset)
+  def handle_event(
+        "create-encrypted-secrets",
+        %{"entries" => entries, "expiration" => expiration} = params,
+        socket
+      )
+      when is_list(entries) and is_integer(expiration) and map_size(params) == 2 do
+    if Enum.all?(entries, &valid_entry?/1) do
+      case Secrets.create_encrypted_secrets(entries, expiration) do
+        {:ok, _ids} -> {:reply, %{ok: true}, socket}
+        {:error, :invalid} -> {:reply, %{ok: false, reason: "invalid_request"}, socket}
       end
-
-    {:noreply, socket}
+    else
+      {:reply, %{ok: false, reason: "invalid_request"}, socket}
+    end
   end
 
-  @impl Phoenix.LiveView
-  def handle_info({:generate_links, opts}, socket) do
-    %{secret: secret, link_count: link_count, expiration: expiration} = opts
-
-    socket =
-      case Secrets.create_secrets(secret, link_count, expiration) do
-        {:ok, secrets} ->
-          assign_links(socket, secrets, socket.assigns.link_url)
-
-        :error ->
-          assign(socket, :error, gettext("Failed to create links."))
-      end
-      |> assign(:loading, false)
-
-    {:noreply, socket}
+  def handle_event("create-encrypted-secrets", _params, socket) do
+    {:reply, %{ok: false, reason: "invalid_request"}, socket}
   end
 
-  defp change(attrs \\ %{}) do
-    fields = %{
-      secret: :string,
-      link_count: :integer,
-      expiration: :integer
-    }
-
-    default_params = %{
-      expiration: @expiration_default,
-      link_count: 1
-    }
-
-    {default_params, fields}
-    |> Ecto.Changeset.cast(attrs, Map.keys(fields))
-    |> Ecto.Changeset.validate_required([:secret, :link_count, :expiration])
-    |> Ecto.Changeset.validate_number(:link_count,
-      greater_than: 0,
-      less_than_or_equal_to: @max_links
-    )
-    |> Ecto.Changeset.validate_inclusion(
-      :expiration,
-      Enum.map(@expiration_options, fn {_label, value} -> value end)
-    )
+  defp valid_entry?(entry) when is_map(entry) do
+    Map.keys(entry) |> Enum.sort() == ["claim_verifier", "id", "payload"]
   end
 
-  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :form, to_form(changeset, as: :create_links_form))
-  end
-
-  defp assign_links(socket, secrets, link_url) do
-    links =
-      for %{id: id, key: key} <- secrets do
-        link_url
-        |> String.replace(":id", id)
-        |> String.replace(":key", key)
-      end
-
-    assign(socket, :links, links)
-  end
+  defp valid_entry?(_entry), do: false
 end

@@ -8,28 +8,6 @@ defmodule ShareSecretWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
 
-  @host_analytics "share-a-secret.fly.dev"
-
-  attr :current_url, :string, required: true, doc: "the current url"
-
-  def analytics(assigns) do
-    %{host: host} = URI.parse(assigns.current_url)
-
-    enable = Application.get_env(:share_secret, :env) == :prod and host == @host_analytics
-
-    assigns = assign(assigns, :enabled, enable)
-
-    ~H"""
-    <script
-      :if={@enabled}
-      defer
-      data-domain="share-a-secret.fly.dev"
-      src="https://plausible.storetastic.cloud/js/script.js"
-    >
-    </script>
-    """
-  end
-
   @doc """
   Renders an input with label.
 
@@ -260,10 +238,11 @@ defmodule ShareSecretWeb.CoreComponents do
   attr :type, :atom, required: true, values: [:error, :info, :warning], doc: "alert type"
   attr :text, :string, required: true, doc: "text to be displayed in the alert"
   attr :class, :string, default: nil, doc: "extra class to be added to the alert"
+  attr :rest, :global
 
   def alert(%{type: :error} = assigns) do
     ~H"""
-    <div class={["alert alert-error", @class]}>
+    <div class={["alert alert-error", @class]} {@rest}>
       <.icon name="hero-exclamation-triangle" />
       <p>
         {@text}
@@ -274,7 +253,7 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def alert(%{type: :info} = assigns) do
     ~H"""
-    <div class={["alert alert-info", @class]}>
+    <div class={["alert alert-info", @class]} {@rest}>
       <.icon name="hero-information-circle" />
       <p>
         {@text}
@@ -285,7 +264,7 @@ defmodule ShareSecretWeb.CoreComponents do
 
   def alert(%{type: :warning} = assigns) do
     ~H"""
-    <div class={["alert alert-warning", @class]}>
+    <div class={["alert alert-warning", @class]} {@rest}>
       <.icon name="hero-exclamation-triangle" />
       <p>
         {@text}
@@ -370,12 +349,12 @@ defmodule ShareSecretWeb.CoreComponents do
         </p>
         <p>
           {gettext(
-            "The secret is stored in the database in an encrypted form. The decryption key is part of the URL, adding an extra layer of security. Only the person with the link can decrypt the secret, ensuring it is securely delivered to the intended recipient. This means that even if someone gains access to the secret itself, they won't be able to decrypt it without the specific key in the URL."
+            "Your browser encrypts the secret before sending it. The server stores only ciphertext, while the decryption key stays in the link fragment and is used only in the recipient's browser."
           )}
         </p>
         <p>
           {gettext(
-            "The URLs are not stored. This means that as long as you keep the links private, it is impossible for anyone to access the decrypted secret."
+            "The complete links are never stored. Keep them private: anyone with a link can reveal its secret once, and a compromised browser or application script could still read it."
           )}
         </p>
       </div>
@@ -457,9 +436,11 @@ defmodule ShareSecretWeb.CoreComponents do
             </.link>
 
             <button
+              id="show-information-modal"
+              type="button"
               class="btn btn-ghost"
               aria-label={gettext("More information")}
-              onclick="information_modal.showModal()"
+              phx-click={JS.set_attribute({"open", ""}, to: "#information_modal")}
             >
               <.icon name="hero-information-circle" class="h-6 w-6" />
             </button>

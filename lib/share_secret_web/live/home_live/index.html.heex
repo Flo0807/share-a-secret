@@ -1,23 +1,22 @@
 <Layouts.app>
-  <div :if={@links == []}>
-    <label for={@form[:secret].id}>
-      <h1 class="mb-4 text-3xl">{gettext("Enter your secret")}</h1>
-    </label>
+  <div id="create-secret-root" phx-hook="SecretCreate" phx-update="ignore">
+    <.form for={@form} id="create-secret-form" class="flex flex-col gap-y-4">
+      <label for="secret-input">
+        <h1 class="mb-4 text-3xl">{gettext("Enter your secret")}</h1>
+      </label>
 
-    <.form
-      for={@form}
-      phx-submit="submit"
-      phx-change="validate"
-      class="flex flex-col gap-y-4"
-    >
       <.input
+        id="secret-input"
         type="textarea"
         field={@form[:secret]}
-        placeholder="Secret..."
+        placeholder={gettext("Secret...")}
+        maxlength="65536"
         required
+        disabled
       />
 
       <.input
+        id="link-count"
         class="input max-w-20 block w-full"
         type="number"
         field={@form[:link_count]}
@@ -25,9 +24,11 @@
         min="1"
         max={@max_links}
         required
+        disabled
       />
 
       <.input
+        id="expiration"
         class="select max-w-32 block w-full"
         type="select"
         field={@form[:expiration]}
@@ -35,37 +36,54 @@
         options={@expiration_options}
         value={@expiration_default}
         required
+        disabled
       />
 
-      <button class="btn btn-primary mt-4 self-start" aria-disabled={@loading} type="submit">
+      <button
+        id="create-secret-submit"
+        class="btn btn-primary mt-4 self-start"
+        type="button"
+        disabled
+      >
         {gettext("Generate links")}
-        <span :if={@loading} class="loading loading-spinner"></span>
+        <span id="create-secret-loading" class="loading loading-spinner" hidden></span>
       </button>
 
-      <p :if={@error} class="text-error mt-4 italic">
-        {@error}
-      </p>
+      <.alert
+        id="create-secret-error"
+        class="mt-4"
+        type={:error}
+        text={gettext("Unable to create the secret securely. Please try again.")}
+        hidden
+      />
+
+      <noscript>
+        <.alert
+          class="mt-4"
+          type={:error}
+          text={
+            gettext("JavaScript and Web Crypto are required to encrypt secrets in your browser.")
+          }
+        />
+      </noscript>
     </.form>
-  </div>
 
-  <div :if={@links != []}>
-    <h1 class="text-3xl">{gettext("Your links")}</h1>
+    <section id="generated-links-panel" hidden>
+      <h1 class="text-3xl">{gettext("Your links")}</h1>
 
-    <.alert
-      class="mt-4"
-      type={:warning}
-      text={
-        gettext(
-          "The following links will reveal your secret. Keep the links as confidential as possible. Each link is valid only once!"
-        )
-      }
-    />
+      <.alert
+        class="mt-4"
+        type={:warning}
+        text={
+          gettext(
+            "The following links will reveal your secret. Keep the links as confidential as possible. Each link is valid only once!"
+          )
+        }
+      />
 
-    <.secret_link
-      :for={{link, index} <- Enum.with_index(@links)}
-      id={"link-#{index}"}
-      link={link}
-      class="mt-6"
-    />
+      <div :for={index <- 0..(@max_links - 1)} id={"link-row-#{index}"} class="mt-6" hidden>
+        <.secret_link id={"link-#{index}"} link="" />
+      </div>
+    </section>
   </div>
 </Layouts.app>
