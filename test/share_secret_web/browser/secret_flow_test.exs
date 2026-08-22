@@ -2,230 +2,215 @@ defmodule ShareSecretWeb.Browser.SecretFlowTest do
   use PhoenixTest.Playwright.Case, async: false
   use ShareSecretWeb, :verified_routes
 
-  import Mox
-
+  alias PlaywrightEx.BrowserContext
   alias PlaywrightEx.Frame
-  alias ShareSecret.CryptoMock
+  alias ShareSecret.Repo
+  alias ShareSecret.Secrets.Secret
 
   @timeout Application.compile_env(:phoenix_test, [:playwright, :timeout], 5_000)
 
   @moduletag :playwright
 
-  setup :verify_on_exit!
-  setup :set_mox_global
-
-  test "create secret, reveal it, and verify it's no longer available", %{conn: conn} do
+  test "encrypts in the browser, scrubs the root, and consumes the secret once", %{conn: conn} do
     secret_text = "This is my super secret message!"
-    encryption_key = "test_encryption_key_123"
-    encrypted_secret = "encrypted_" <> secret_text
+    install_websocket_recorder(conn)
 
-    expect(CryptoMock, :generate_key, fn -> encryption_key end)
-    expect(CryptoMock, :encrypt, fn ^secret_text, ^encryption_key -> encrypted_secret end)
-    expect(CryptoMock, :decrypt!, fn ^encrypted_secret, ^encryption_key -> secret_text end)
-
-    # Step 1: Visit index page and create a secret
     session =
       conn
       |> visit(~p"/")
       |> fill_in("Enter your secret", with: secret_text)
       |> click_button("Generate links")
-      |> assert_has("h1", text: "Your links")
-      |> assert_has("#link-0")
+      |> assert_has("#generated-links-panel:not([hidden])")
+      |> assert_has("#link-row-0:not([hidden])")
 
-    # Step 2: Extract the generated secret link
-    secret_link = get_link_url(session)
+    secret_link = element_value(session, "#link-0")
+    uri = URI.parse(secret_link)
+    id = String.trim_leading(uri.path, "/")
+    root = String.trim_leading(uri.fragment, "v1.")
 
-    # Step 3: Navigate to the secret link
+    assert uri.query == nil
+    assert String.starts_with?(uri.fragment, "v1.")
+    refute_frames_contain(session, [secret_text, root])
+
+    stored = Repo.get!(Secret, id)
+    assert stored.format_version == 1
+    assert stored.secret == nil
+    refute stored.encrypted_payload =~ secret_text
+
     session =
-      conn
+      session
       |> visit(secret_link)
-      |> assert_has("h1", text: "Reveal a secret")
-      |> assert_has(".alert-info", text: "Once you have revealed the secret")
+      |> assert_has("#reveal-secret-root")
+      |> assert_has("#reveal-secret-notice:not([hidden])")
 
-    # Step 4: Click the reveal button and verify the secret is displayed
+    assert evaluate_js(session, "window.location.hash") == ""
+    refute_frames_contain(session, [secret_text, root])
+
+    session =
+      session
+      |> click_button("Reveal")
+      |> assert_has("#secret-output:not([hidden])")
+
+    assert element_value(session, "#secret-text") == secret_text
+    refute_frames_contain(session, [secret_text, root])
+    assert Repo.get(Secret, id) == nil
+
     session
-    |> click_button("Reveal")
-    |> assert_has("#secret-text", text: secret_text)
-
-    # Step 5: Navigate to the link again and verify it's no longer available
-    conn
+    |> visit(~p"/")
     |> visit(secret_link)
-    |> assert_has(".alert-error", text: "Invalid link")
-    |> assert_has(".alert-error", text: "the secret has already been revealed")
-    |> refute_has("button", text: "Reveal")
+    |> assert_has("#invalid-link-error")
+    |> refute_has("#reveal-secret-button")
   end
 
-  test "multiple links for same secret work independently", %{conn: conn} do
+  test "multiple links have independent roots and can be revealed independently", %{conn: conn} do
     secret_text = "Shared secret across multiple links"
-    encryption_key = "multi_link_key_456"
-    encrypted_secret = "encrypted_" <> secret_text
 
-    # Set up expectations for 3 links
-    expect(CryptoMock, :generate_key, 3, fn -> encryption_key end)
-    expect(CryptoMock, :encrypt, 3, fn ^secret_text, ^encryption_key -> encrypted_secret end)
-    expect(CryptoMock, :decrypt!, 3, fn ^encrypted_secret, ^encryption_key -> secret_text end)
-
-    # Create secret with 3 links
     session =
       conn
       |> visit(~p"/")
       |> fill_in("Enter your secret", with: secret_text)
       |> fill_in("Number of links", with: "3")
       |> click_button("Generate links")
-      |> assert_has("#link-0")
-      |> assert_has("#link-1")
-      |> assert_has("#link-2")
+      |> assert_has("#link-row-0:not([hidden])")
+      |> assert_has("#link-row-1:not([hidden])")
+      |> assert_has("#link-row-2:not([hidden])")
 
-    # Extract all 3 links
-    link_0 = get_link_url(session, 0)
-    link_1 = get_link_url(session, 1)
-    link_2 = get_link_url(session, 2)
+    links = for index <- 0..2, do: element_value(session, "#link-#{index}")
+    assert length(Enum.uniq(links)) == 3
+    assert length(links |> Enum.map(&URI.parse(&1).fragment) |> Enum.uniq()) == 3
 
-    # Verify all links are different
-    assert link_0 != link_1
-    assert link_1 != link_2
-    assert link_0 != link_2
+    for link <- links do
+      session =
+        session
+        |> visit(link)
+        |> click_button("Reveal")
+        |> assert_has("#secret-output:not([hidden])")
 
-    # Reveal using link #0
-    conn
-    |> visit(link_0)
-    |> click_button("Reveal")
-    |> assert_has("#secret-text", text: secret_text)
-
-    # Try link #0 again - should fail
-    conn
-    |> visit(link_0)
-    |> assert_has(".alert-error", text: "Invalid link")
-    |> refute_has("button", text: "Reveal")
-
-    # Reveal using link #1 - should still work
-    conn
-    |> visit(link_1)
-    |> click_button("Reveal")
-    |> assert_has("#secret-text", text: secret_text)
-
-    # Try link #1 again - should fail
-    conn
-    |> visit(link_1)
-    |> assert_has(".alert-error", text: "Invalid link")
-    |> refute_has("button", text: "Reveal")
-
-    # Reveal using link #2 - should still work
-    conn
-    |> visit(link_2)
-    |> click_button("Reveal")
-    |> assert_has("#secret-text", text: secret_text)
-
-    # Try link #2 again - should fail
-    conn
-    |> visit(link_2)
-    |> assert_has(".alert-error", text: "Invalid link")
-    |> refute_has("button", text: "Reveal")
+      assert element_value(session, "#secret-text") == secret_text
+    end
   end
 
-  test "validates secret is required", %{conn: conn} do
-    # Visit homepage and try to submit without filling secret
+  test "a modified fragment fails without consuming the valid link", %{conn: conn} do
+    session =
+      conn
+      |> visit(~p"/")
+      |> fill_in("Enter your secret", with: "tamper-resistant")
+      |> click_button("Generate links")
+      |> assert_has("#link-row-0:not([hidden])")
+
+    valid_link = element_value(session, "#link-0")
+    wrong_link = replace_last_character(valid_link)
+
+    session
+    |> visit(wrong_link)
+    |> click_button("Reveal")
+    |> assert_has("#reveal-secret-error:not([hidden])")
+    |> refute_has("#reveal-secret-notice:not([hidden])")
+
+    session =
+      session
+      |> visit(~p"/")
+      |> visit(valid_link)
+      |> click_button("Reveal")
+      |> assert_has("#secret-output:not([hidden])")
+
+    assert element_value(session, "#secret-text") == "tamper-resistant"
+  end
+
+  test "native validation prevents empty or out-of-range creation", %{conn: conn} do
     session =
       conn
       |> visit(~p"/")
       |> click_button("Generate links")
 
-    # Should still be on the form page (form validation prevented submission)
-    session
-    |> assert_has("h1", text: "Enter your secret")
-  end
+    assert_has(session, "#create-secret-form:not([hidden])")
+    refute_has(session, "#generated-links-panel:not([hidden])")
 
-  test "validates link count is within range", %{conn: conn} do
-    session =
-      conn
-      |> visit(~p"/")
-      |> fill_in("Enter your secret", with: "test secret")
+    session = fill_in(session, "Enter your secret", with: "test secret")
 
-    # Set value to 0 and trigger the input event to call LiveView validation
-    Frame.evaluate(
-      session.frame_id,
+    Frame.evaluate(session.frame_id,
       expression: """
-      const input = document.querySelector('input[type=number]');
-      input.value = 0;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+      () => {
+        const input = document.querySelector('#link-count')
+        input.value = 0
+      }
       """,
+      is_function: true,
       timeout: @timeout
     )
 
-    # Should show validation error
     session
-    |> assert_has(".text-error", text: "must be greater than 0")
+    |> click_button("Generate links")
+    |> assert_has("#create-secret-form:not([hidden])")
+    |> refute_has("#generated-links-panel:not([hidden])")
   end
 
-  test "shows error for various invalid URLs", %{conn: conn} do
-    # Test 1: Invalid UUID
-    conn
-    |> visit("/not-a-valid-uuid?key=somekey")
-    |> assert_has(".alert-error", text: "Invalid link")
-    |> refute_has("button", text: "Reveal")
+  test "round trips Unicode and HTML-like text as a textarea value", %{conn: conn} do
+    secret_text = "🔐 Special: <script>alert('no')</script>\nGrüße & goodbye"
 
-    # Test 2: Valid UUID but missing key parameter
-    valid_uuid = Ecto.UUID.generate()
-
-    conn
-    |> visit("/#{valid_uuid}")
-    |> assert_has(".alert-error", text: "Invalid link")
-    |> refute_has("button", text: "Reveal")
-
-    # Test 3: Valid UUID but secret doesn't exist
-    conn
-    |> visit("/#{valid_uuid}?key=somekey")
-    |> assert_has(".alert-error", text: "Invalid link")
-    |> refute_has("button", text: "Reveal")
-  end
-
-  test "handles special characters in secret", %{conn: conn} do
-    # Test with HTML special characters and quotes (avoiding script tags that might cause issues)
-    secret_text = "Special chars: <div>Hello & goodbye</div> \"quotes\" 'apostrophes' @#$%"
-    encryption_key = "special_chars_key"
-    encrypted_secret = "encrypted_special"
-
-    expect(CryptoMock, :generate_key, fn -> encryption_key end)
-    expect(CryptoMock, :encrypt, fn ^secret_text, ^encryption_key -> encrypted_secret end)
-    expect(CryptoMock, :decrypt!, fn ^encrypted_secret, ^encryption_key -> secret_text end)
-
-    # Create secret with special characters
     session =
       conn
       |> visit(~p"/")
       |> fill_in("Enter your secret", with: secret_text)
       |> click_button("Generate links")
-      |> assert_has("h1", text: "Your links")
-      |> assert_has("#link-0")
+      |> assert_has("#link-row-0:not([hidden])")
 
-    # Extract and visit the link
-    secret_link = get_link_url(session, 0)
+    link = element_value(session, "#link-0")
 
-    # Reveal and verify the secret is displayed
     session =
-      conn
-      |> visit(secret_link)
+      session
+      |> visit(link)
       |> click_button("Reveal")
-      |> assert_has("#secret-text")
+      |> assert_has("#secret-output:not([hidden])")
 
-    # Verify the textarea contains the key parts of our special characters
-    {:ok, revealed_text} =
-      Frame.evaluate(session.frame_id,
-        expression: "document.querySelector('#secret-text').value",
-        timeout: @timeout
-      )
-
-    assert revealed_text == secret_text
+    assert element_value(session, "#secret-text") == secret_text
+    refute_has(session, "script:not([src])")
   end
 
-  defp get_link_url(session, index \\ 0) do
-    {:ok, link} =
-      Frame.evaluate(session.frame_id,
-        expression: "document.querySelector('#link-#{index}').value",
+  defp install_websocket_recorder(conn) do
+    {:ok, _} =
+      BrowserContext.add_init_script(conn.context_id,
+        source: """
+        window.__sentWebSocketFrames = []
+        const originalSend = WebSocket.prototype.send
+
+        WebSocket.prototype.send = function (data) {
+          if (typeof data === 'string') {
+            window.__sentWebSocketFrames.push(data)
+          } else if (data instanceof ArrayBuffer) {
+            window.__sentWebSocketFrames.push(new TextDecoder().decode(data))
+          } else if (ArrayBuffer.isView(data)) {
+            window.__sentWebSocketFrames.push(new TextDecoder().decode(data))
+          }
+
+          return originalSend.call(this, data)
+        }
+        """,
         timeout: @timeout
       )
 
-    link
+    conn
+  end
+
+  defp refute_frames_contain(session, secrets) do
+    frames = evaluate_js(session, "window.__sentWebSocketFrames || []")
+
+    for secret <- secrets do
+      refute Enum.any?(frames, &String.contains?(&1, secret))
+    end
+  end
+
+  defp element_value(session, selector) do
+    evaluate_js(session, "document.querySelector(#{Jason.encode!(selector)}).value")
+  end
+
+  defp evaluate_js(session, expression) do
+    {:ok, value} = Frame.evaluate(session.frame_id, expression: expression, timeout: @timeout)
+    value
+  end
+
+  defp replace_last_character(value) do
+    replacement = if String.ends_with?(value, "A"), do: "B", else: "A"
+    String.slice(value, 0, byte_size(value) - 1) <> replacement
   end
 end

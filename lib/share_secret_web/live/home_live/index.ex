@@ -2,6 +2,7 @@ defmodule ShareSecretWeb.HomeLive.Index do
   use ShareSecretWeb, :live_view
 
   alias ShareSecret.Secrets
+  alias ShareSecret.RateLimiter
 
   @max_links 10
   @expiration_options [
@@ -16,115 +17,76 @@ defmodule ShareSecretWeb.HomeLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    changeset = change()
+    form =
+      %{
+        "secret" => "",
+        "link_count" => "1",
+        "expiration" => Integer.to_string(@expiration_default)
+      }
+      |> to_form(as: :create_links_form)
 
-    socket =
+    {:ok,
+     socket
+     |> assign(:max_links, @max_links)
+     |> assign(:expiration_options, @expiration_options)
+     |> assign(:expiration_default, @expiration_default)
+     |> assign(:rate_limit_key, rate_limit_key(socket))
+     |> assign(:form, form)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event(
+        "create-encrypted-secrets",
+        %{"entries" => entries, "expiration" => expiration} = params,
+        socket
+      )
+      when is_list(entries) and is_integer(expiration) and map_size(params) == 2 do
+    with true <- RateLimiter.allow?(socket.assigns.rate_limit_key, rate_limit_cost(entries)),
+         true <- Enum.all?(entries, &valid_entry?/1),
+         {:ok, _ids} <- Secrets.create_encrypted_secrets(entries, expiration) do
+      {:reply, %{ok: true}, socket}
+    else
+      _rate_limited_or_invalid ->
+        {:reply, %{ok: false, reason: "invalid_request"}, socket}
+    end
+  end
+
+  def handle_event("create-encrypted-secrets", _params, socket) do
+    {:reply, %{ok: false, reason: "invalid_request"}, socket}
+  end
+
+  defp valid_entry?(entry) when is_map(entry) do
+    Map.keys(entry) |> Enum.sort() == ["claim_verifier", "id", "payload"]
+  end
+
+  defp valid_entry?(_entry), do: false
+
+  defp rate_limit_cost(entries), do: entries |> length() |> max(1) |> min(@max_links)
+
+  defp rate_limit_key(socket) do
+    identity = trusted_forwarded_for(socket) || peer_address(socket) || "unknown"
+    :crypto.hash(:sha256, :erlang.term_to_binary(identity))
+  end
+
+  defp trusted_forwarded_for(socket) do
+    if Application.get_env(:share_secret, :trust_proxy_headers, false) do
       socket
-      |> assign(:max_links, @max_links)
-      |> assign(:expiration_options, @expiration_options)
-      |> assign(:expiration_default, @expiration_default)
-      |> assign(:error, nil)
-      |> assign(:loading, false)
-      |> assign(:links, [])
-      |> assign_form(changeset)
+      |> get_connect_info(:x_headers)
+      |> List.wrap()
+      |> Enum.find_value(fn
+        {"x-forwarded-for", value} ->
+          value |> String.split(",", parts: 2) |> hd() |> String.trim()
 
-    {:ok, socket}
+        _header ->
+          nil
+      end)
+    end
   end
 
-  @impl Phoenix.LiveView
-  def handle_params(_params, uri, socket) do
-    %{scheme: scheme, authority: authority} = URI.parse(uri)
-
-    link_url = "#{scheme}://#{authority}/:id?key=:key"
-    socket = assign(socket, :link_url, link_url)
-
-    {:noreply, socket}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("validate", %{"create_links_form" => params}, socket) do
-    changeset = params |> change() |> Map.put(:action, :validate)
-    socket = assign_form(socket, changeset)
-
-    {:noreply, socket}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("submit", %{"create_links_form" => params}, socket) do
-    result = params |> change() |> Ecto.Changeset.apply_action(:validate)
-
-    socket =
-      case result do
-        {:ok, opts} ->
-          send(self(), {:generate_links, opts})
-
-          socket
-          |> assign(:error, nil)
-          |> assign(:loading, true)
-
-        {:error, changeset} ->
-          socket
-          |> assign(:error, gettext("Invalid form data."))
-          |> assign_form(changeset)
-      end
-
-    {:noreply, socket}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_info({:generate_links, opts}, socket) do
-    %{secret: secret, link_count: link_count, expiration: expiration} = opts
-
-    socket =
-      case Secrets.create_secrets(secret, link_count, expiration) do
-        {:ok, secrets} ->
-          assign_links(socket, secrets, socket.assigns.link_url)
-
-        :error ->
-          assign(socket, :error, gettext("Failed to create links."))
-      end
-      |> assign(:loading, false)
-
-    {:noreply, socket}
-  end
-
-  defp change(attrs \\ %{}) do
-    fields = %{
-      secret: :string,
-      link_count: :integer,
-      expiration: :integer
-    }
-
-    default_params = %{
-      expiration: @expiration_default,
-      link_count: 1
-    }
-
-    {default_params, fields}
-    |> Ecto.Changeset.cast(attrs, Map.keys(fields))
-    |> Ecto.Changeset.validate_required([:secret, :link_count, :expiration])
-    |> Ecto.Changeset.validate_number(:link_count,
-      greater_than: 0,
-      less_than_or_equal_to: @max_links
-    )
-    |> Ecto.Changeset.validate_inclusion(
-      :expiration,
-      Enum.map(@expiration_options, fn {_label, value} -> value end)
-    )
-  end
-
-  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
-    assign(socket, :form, to_form(changeset, as: :create_links_form))
-  end
-
-  defp assign_links(socket, secrets, link_url) do
-    links =
-      for %{id: id, key: key} <- secrets do
-        link_url
-        |> String.replace(":id", id)
-        |> String.replace(":key", key)
-      end
-
-    assign(socket, :links, links)
+  defp peer_address(socket) do
+    case get_connect_info(socket, :peer_data) do
+      %{address: address} -> address
+      _missing -> nil
+    end
   end
 end
