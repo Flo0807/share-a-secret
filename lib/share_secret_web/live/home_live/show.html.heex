@@ -22,9 +22,20 @@
       phx-update="ignore"
       data-secret-id={@id}
     >
-      <button id="reveal-secret-button" class="btn btn-primary" type="button" disabled>
+      <button
+        id="reveal-secret-button"
+        class="btn btn-primary"
+        type="button"
+        data-secret-reveal-target="button"
+        disabled
+      >
         {gettext("Reveal")}
-        <span id="reveal-secret-loading" class="loading loading-spinner" hidden></span>
+        <span
+          id="reveal-secret-loading"
+          class="loading loading-spinner"
+          data-secret-reveal-target="loading"
+          hidden
+        ></span>
       </button>
 
       <.alert
@@ -36,15 +47,17 @@
             "Unable to reveal this secret. The link may be invalid, expired, or already used."
           )
         }
+        data-secret-reveal-target="error"
         hidden
       />
 
-      <div id="secret-output" hidden>
+      <div id="secret-output" data-secret-reveal-target="output" hidden>
         <textarea
           id="secret-text"
           phx-hook="DynamicTextArea"
           class="textarea textarea-bordered h-[100px] w-full"
           data-min-height={100}
+          data-secret-reveal-target="textarea"
           readonly
         ></textarea>
         <.copy_to_clipboard

@@ -178,11 +178,19 @@ defmodule ShareSecretWeb.CoreComponents do
   attr :id, :string, required: true, doc: "unique id for the link"
   attr :link, :string, required: true, doc: "the link"
   attr :class, :string, default: nil, doc: "extra class to be added to the link"
+  attr :rest, :global, doc: "additional attributes for the link input"
 
   def secret_link(assigns) do
     ~H"""
     <div class={["flex space-x-2", @class]}>
-      <input id={@id} type="text" class="input input-bordered w-full" value={@link} readonly />
+      <input
+        id={@id}
+        type="text"
+        class="input input-bordered w-full"
+        value={@link}
+        readonly
+        {@rest}
+      />
 
       <div class="tooltip" data-tip={gettext("Copy")}>
         <.copy_to_clipboard

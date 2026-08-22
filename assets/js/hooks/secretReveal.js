@@ -9,11 +9,11 @@ import { takeSecretFragment } from '../secretFragment.js'
 
 export default {
   mounted () {
-    this.button = this.el.querySelector('#reveal-secret-button')
-    this.loading = this.el.querySelector('#reveal-secret-loading')
-    this.error = this.el.querySelector('#reveal-secret-error')
-    this.output = this.el.querySelector('#secret-output')
-    this.textarea = this.el.querySelector('#secret-text')
+    this.button = this.el.querySelector('[data-secret-reveal-target="button"]')
+    this.loading = this.el.querySelector('[data-secret-reveal-target="loading"]')
+    this.error = this.el.querySelector('[data-secret-reveal-target="error"]')
+    this.output = this.el.querySelector('[data-secret-reveal-target="output"]')
+    this.textarea = this.el.querySelector('[data-secret-reveal-target="textarea"]')
     this.onClick = () => this.reveal()
     this.button.addEventListener('click', this.onClick)
 

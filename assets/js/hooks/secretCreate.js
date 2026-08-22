@@ -2,14 +2,14 @@ import { buildSecretUrl, createEncryptedSecret } from '../secretCrypto.js'
 
 export default {
   mounted () {
-    this.form = this.el.querySelector('#create-secret-form')
-    this.secretInput = this.el.querySelector('#secret-input')
-    this.linkCountInput = this.el.querySelector('#link-count')
-    this.expirationInput = this.el.querySelector('#expiration')
-    this.submitButton = this.el.querySelector('#create-secret-submit')
-    this.loading = this.el.querySelector('#create-secret-loading')
-    this.error = this.el.querySelector('#create-secret-error')
-    this.results = this.el.querySelector('#generated-links-panel')
+    this.form = this.el.querySelector('[data-secret-create-target="form"]')
+    this.secretInput = this.el.querySelector('[data-secret-create-target="secret"]')
+    this.linkCountInput = this.el.querySelector('[data-secret-create-target="link-count"]')
+    this.expirationInput = this.el.querySelector('[data-secret-create-target="expiration"]')
+    this.submitButton = this.el.querySelector('[data-secret-create-target="submit"]')
+    this.loading = this.el.querySelector('[data-secret-create-target="loading"]')
+    this.error = this.el.querySelector('[data-secret-create-target="error"]')
+    this.results = this.el.querySelector('[data-secret-create-target="results"]')
     this.onSubmit = event => event.preventDefault()
     this.onClick = () => this.createLinks()
 
@@ -56,8 +56,8 @@ export default {
       if (!reply.ok) throw new Error('secret creation failed')
 
       encryptedSecrets.forEach((secret, index) => {
-        const row = this.el.querySelector(`#link-row-${index}`)
-        const input = this.el.querySelector(`#link-${index}`)
+        const row = this.el.querySelector(`[data-secret-create-link-row="${index}"]`)
+        const input = this.el.querySelector(`[data-secret-create-link="${index}"]`)
         input.value = buildSecretUrl(window.location.origin, secret.id, secret.root)
         row.hidden = false
       })

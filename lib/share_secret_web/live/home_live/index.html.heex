@@ -1,6 +1,11 @@
 <Layouts.app>
   <div id="create-secret-root" phx-hook="SecretCreate" phx-update="ignore">
-    <.form for={@form} id="create-secret-form" class="flex flex-col gap-y-4">
+    <.form
+      for={@form}
+      id="create-secret-form"
+      class="flex flex-col gap-y-4"
+      data-secret-create-target="form"
+    >
       <label for="secret-input">
         <h1 class="mb-4 text-3xl">{gettext("Enter your secret")}</h1>
       </label>
@@ -13,6 +18,7 @@
         maxlength="65536"
         required
         disabled
+        data-secret-create-target="secret"
       />
 
       <.input
@@ -25,6 +31,7 @@
         max={@max_links}
         required
         disabled
+        data-secret-create-target="link-count"
       />
 
       <.input
@@ -37,6 +44,7 @@
         value={@expiration_default}
         required
         disabled
+        data-secret-create-target="expiration"
       />
 
       <button
@@ -44,9 +52,15 @@
         class="btn btn-primary mt-4 self-start"
         type="button"
         disabled
+        data-secret-create-target="submit"
       >
         {gettext("Generate links")}
-        <span id="create-secret-loading" class="loading loading-spinner" hidden></span>
+        <span
+          id="create-secret-loading"
+          class="loading loading-spinner"
+          data-secret-create-target="loading"
+          hidden
+        ></span>
       </button>
 
       <.alert
@@ -54,6 +68,7 @@
         class="mt-4"
         type={:error}
         text={gettext("Unable to create the secret securely. Please try again.")}
+        data-secret-create-target="error"
         hidden
       />
 
@@ -68,7 +83,7 @@
       </noscript>
     </.form>
 
-    <section id="generated-links-panel" hidden>
+    <section id="generated-links-panel" data-secret-create-target="results" hidden>
       <h1 class="text-3xl">{gettext("Your links")}</h1>
 
       <.alert
@@ -81,8 +96,14 @@
         }
       />
 
-      <div :for={index <- 0..(@max_links - 1)} id={"link-row-#{index}"} class="mt-6" hidden>
-        <.secret_link id={"link-#{index}"} link="" />
+      <div
+        :for={index <- 0..(@max_links - 1)}
+        id={"link-row-#{index}"}
+        class="mt-6"
+        data-secret-create-link-row={index}
+        hidden
+      >
+        <.secret_link id={"link-#{index}"} link="" data-secret-create-link={index} />
       </div>
     </section>
   </div>
