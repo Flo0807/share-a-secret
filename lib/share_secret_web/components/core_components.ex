@@ -208,6 +208,7 @@ defmodule ShareSecretWeb.CoreComponents do
 
       <div class="tooltip" data-tip={gettext("Copy")}>
         <.copy_to_clipboard
+          id={"copy-#{@id}"}
           class="btn btn-neutral"
           aria-label={gettext("Copy %{id}", %{id: @id})}
           clipboard_element_id={@id}
@@ -443,6 +444,8 @@ defmodule ShareSecretWeb.CoreComponents do
     """
   end
 
+  attr :id, :string, required: true, doc: "the unique id of the copy button"
+
   attr :clipboard_element_id, :string,
     required: true,
     doc: "the element id of the clipboard element"
@@ -461,30 +464,42 @@ defmodule ShareSecretWeb.CoreComponents do
   def copy_to_clipboard(assigns) do
     ~H"""
     <button
-      x-data={"{
-        copyNotification: false,
-        copyToClipboard(id) {
-            value = document.getElementById(id).value
-            navigator.clipboard.writeText(value);
-            this.copyNotification = true;
-            let that = this;
-            setTimeout(function(){
-                that.copyNotification = false;
-            }, #{@animation_duration});
-        }
-      }"}
-      @click={"!copyNotification && copyToClipboard('#{@clipboard_element_id}');"}
+      id={@id}
+      type="button"
+      phx-hook="CopyToClipboard"
+      phx-click={
+        JS.dispatch("share-secret:copy-to-clipboard",
+          detail: %{sourceId: @clipboard_element_id}
+        )
+      }
+      data-copy-success={show_copy_notification(@id)}
+      data-copy-reset={hide_copy_notification(@id)}
+      data-copy-duration={@animation_duration}
       class={@class}
       {@rest}
     >
-      <span x-show="!copyNotification">
+      <span id={"#{@id}-idle"}>
         {render_slot(@idle)}
       </span>
-      <span x-show="copyNotification" x-cloak>
+      <span id={"#{@id}-active"} class="hidden" aria-live="polite">
         {render_slot(@active)}
       </span>
     </button>
     """
+  end
+
+  defp show_copy_notification(id) do
+    %JS{}
+    |> JS.hide(to: "##{id}-idle")
+    |> JS.show(to: "##{id}-active", display: "inline")
+    |> JS.set_attribute({"disabled", "disabled"}, to: "##{id}")
+  end
+
+  defp hide_copy_notification(id) do
+    %JS{}
+    |> JS.hide(to: "##{id}-active")
+    |> JS.show(to: "##{id}-idle", display: "inline")
+    |> JS.remove_attribute("disabled", to: "##{id}")
   end
 
   ## JS Commands
