@@ -410,11 +410,37 @@ defmodule ShareSecretWeb.CoreComponents do
                 tabindex="0"
                 class="dropdown-content z-[1] menu bg-base-200 rounded-box w-32 p-2 shadow"
               >
-                <button class="btn btn-sm mb-1 text-sm normal-case" data-set-theme="light">
+                <button
+                  id="theme-system"
+                  type="button"
+                  class="btn btn-sm mb-1 justify-start text-sm normal-case"
+                  data-set-theme=""
+                  data-act-class="btn-active"
+                  data-act-attribute="aria-pressed:true"
+                >
+                  <.icon name="hero-computer-desktop" class="mr-1 inline-block h-4 w-4" />
+                  {gettext("System")}
+                </button>
+
+                <button
+                  id="theme-light"
+                  type="button"
+                  class="btn btn-sm mb-1 justify-start text-sm normal-case"
+                  data-set-theme="light"
+                  data-act-class="btn-active"
+                  data-act-attribute="aria-pressed:true"
+                >
                   <.icon name="hero-sun" class="mr-1 inline-block h-4 w-4" /> {gettext("Light")}
                 </button>
 
-                <button class="btn btn-sm text-sm normal-case" data-set-theme="dark">
+                <button
+                  id="theme-dark"
+                  type="button"
+                  class="btn btn-sm justify-start text-sm normal-case"
+                  data-set-theme="dark"
+                  data-act-class="btn-active"
+                  data-act-attribute="aria-pressed:true"
+                >
                   <.icon name="hero-moon" class="mr-1 inline-block h-4 w-4" /> {gettext("Dark")}
                 </button>
               </div>

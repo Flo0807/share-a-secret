@@ -27,7 +27,10 @@ import topbar from 'topbar'
 import { themeChange } from 'theme-change'
 import * as Hooks from './hooks/index'
 
-themeChange()
+// The script is deferred, so the server-rendered theme controls are already in
+// the DOM. theme-change v3 can be initialized repeatedly and only binds each
+// control once, which is useful when LiveView replaces parts of the page.
+themeChange(false)
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content')
 const liveSocket = new LiveSocket('/live', Socket, {
@@ -39,7 +42,10 @@ const liveSocket = new LiveSocket('/live', Socket, {
 // Show progress bar on live navigation and form submits
 topbar.config({ barColors: { 0: '#29d' }, shadowColor: 'rgba(0, 0, 0, .3)' })
 window.addEventListener('phx:page-loading-start', _info => topbar.show(300))
-window.addEventListener('phx:page-loading-stop', _info => topbar.hide())
+window.addEventListener('phx:page-loading-stop', _info => {
+  topbar.hide()
+  themeChange(false)
+})
 
 // Fix for mobile devices app height
 const appHeight = () => {
