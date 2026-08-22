@@ -183,3 +183,8 @@ msgstr ""
 #, elixir-autogen, elixir-format
 msgid "Enter your secret"
 msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "System"
+msgstr ""
