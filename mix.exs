@@ -77,7 +77,7 @@ defmodule ShareSecret.MixProject do
       {:tailwind_formatter, "== 0.4.3", only: [:dev, :test], runtime: false},
       {:credo, "== 1.7.19", only: [:dev, :test], runtime: false},
       {:floki, "== 0.38.4", only: :test},
-      {:mox, "== 1.3.0", only: :test},
+      {:mox, "== 1.3.1", only: :test},
       {:lazy_html, "== 0.1.12", only: :test},
       {:igniter, "== 0.8.3", only: [:dev, :test]},
       {:tidewave, "== 0.9.0", only: [:dev]},
