@@ -3,9 +3,98 @@
     {gettext("Reveal a secret")}
   </h1>
 
-  <.alert :if={@error} class="mt-4" type={:error} text={@error} />
+  <.alert :if={@error} id="invalid-link-error" class="mt-4" type={:error} text={@error} />
 
-  <div :if={!@error} class="mt-4">
+  <div
+    :if={!@error && @mode == :client}
+    id="reveal-secret-root"
+    class="mt-4"
+    phx-hook="SecretReveal"
+    phx-update="ignore"
+    data-secret-id={@id}
+  >
+    <.alert
+      id="reveal-secret-notice"
+      type={:info}
+      text={
+        gettext(
+          "Once you have revealed the secret, you will no longer be able to access it using this URL."
+        )
+      }
+      data-secret-reveal-target="notice"
+      hidden
+    />
+
+    <.alert
+      id="reveal-secret-error"
+      type={:error}
+      text={
+        gettext(
+          "Unable to reveal this secret. The link may be invalid, expired, or already used."
+        )
+      }
+      data-secret-reveal-target="error"
+      hidden
+    />
+
+    <div class="mt-6">
+      <button
+        id="reveal-secret-button"
+        class="btn btn-primary"
+        type="button"
+        data-secret-reveal-target="button"
+        disabled
+      >
+        {gettext("Reveal")}
+        <span
+          id="reveal-secret-loading"
+          class="loading loading-spinner"
+          data-secret-reveal-target="loading"
+          hidden
+        ></span>
+      </button>
+
+      <div id="secret-output" data-secret-reveal-target="output" hidden>
+        <textarea
+          id="secret-text"
+          phx-hook="DynamicTextArea"
+          class="textarea textarea-bordered h-[100px] w-full"
+          data-min-height={100}
+          data-secret-reveal-target="textarea"
+          readonly
+        ></textarea>
+        <.copy_to_clipboard
+          id="copy-secret"
+          class="btn btn-neutral mt-6"
+          aria-label={gettext("Copy secret")}
+          clipboard_element_id="secret-text"
+        >
+          <:active>
+            <div class="text-success flex items-center space-x-2">
+              <p>{gettext("Copy secret")}</p>
+              <.icon name="hero-clipboard-document-check" />
+            </div>
+          </:active>
+          <:idle>
+            <div class="flex items-center space-x-2">
+              <p>{gettext("Copy secret")}</p>
+              <.icon name="hero-clipboard" />
+            </div>
+          </:idle>
+        </.copy_to_clipboard>
+      </div>
+
+      <noscript>
+        <.alert
+          class="mt-4"
+          type={:error}
+          text={gettext("JavaScript and Web Crypto are required to decrypt this secret.")}
+        />
+      </noscript>
+    </div>
+  </div>
+
+  <div :if={!@error && @mode == :legacy} class="mt-4">
     <.alert
       type={:info}
       text={
@@ -45,7 +134,13 @@
         </:idle>
       </.copy_to_clipboard>
 
-      <button :if={!@secret} class="btn btn-primary" phx-click="reveal-secret">
+      <button
+        :if={!@secret}
+        id="reveal-legacy-secret-button"
+        class="btn btn-primary"
+        type="button"
+        phx-click="reveal-legacy-secret"
+      >
         {gettext("Reveal")}
       </button>
     </div>
