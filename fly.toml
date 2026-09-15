@@ -16,6 +16,7 @@ swap_size_mb = 512
 [env]
   PHX_HOST = "share-a-secret.fly.dev"
   PORT = "8080"
+  TRUST_PROXY_HEADERS = "true"
 
 [http_service]
   internal_port = 8080
