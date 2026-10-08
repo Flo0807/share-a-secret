@@ -6,15 +6,16 @@ Share a Secret is an open-source and self-hosted secret sharing platform.
 
 It lets you securely share information with trusted people through a link. This can be anything - a message, a password or a piece of information you want to share discreetly.
 
-Once you have entered a secret, you can configure how many links you need and how long the secret will be available. This will generate links that you can copy and give to trusted people. 
-Once they have accessed the secret, the link is no longer valid. 
+Once you have entered a secret, you can configure how many links you need and how long the secret will be available. This generates links that you can copy and give to trusted people. Once a link has been used, it is no longer valid.
 
-The secret is stored in the database using a symmetric 128bit AES encryption. The decryption key is part of the URL, adding an extra layer of security. 
-Only the person with the link can decrypt the secret, ensuring it is securely delivered to the intended recipient. This means that even if someone gains access to the secret itself, they won't be able to decrypt it without the specific key in the URL.
+New secrets are encrypted in the browser with AES-256-GCM before they cross the network. The server stores only an authenticated ciphertext and a one-way claim verifier. A random 256-bit root stays in the URL fragment, which browsers do not include in HTTP requests. The application removes the fragment from browser history before Phoenix LiveView establishes its connection.
 
-The URLs are not stored. This means that as long as you keep the links private, it is impossible for anyone to access the decrypted secret.
+The server atomically deletes a ciphertext when the recipient presents the independently derived claim capability, then the browser decrypts it. Existing links created by older releases remain temporarily compatible with the legacy server-side encryption format.
+
+Client-side encryption protects plaintext from the application server, database, caches, and ordinary request logging. It cannot protect against compromised JavaScript served by the host, malicious browser extensions, compromised sender or recipient devices, or disclosure through browser history, clipboard contents, or link sharing. See [the encryption protocol and threat model](docs/client-encryption.md) for the complete design and operational requirements.
 
 Tech stack:
+
 - Elixir, Phoenix, LiveView, TailwindCSS, daisyUI, PostgreSQL
 
 The idea for this project came from https://github.com/Luzifer/ots. I wanted to build something similar using Elixir and Phoenix. If you want to be able to share files as well, check out the linked project.
@@ -65,7 +66,7 @@ Run the migrations:
 /app/bin/migrate
 ```
 
-You can now access the application at configured host and port. We recommend using a reverse proxy like nginx to add SSL encryption.
+You can now access the application through HTTPS. Production releases fail closed by redirecting HTTP to HTTPS. If a trusted reverse proxy terminates TLS, set `TRUST_PROXY_HEADERS=true` only when the application port is not publicly reachable and the proxy strips client-supplied forwarding headers. Do not expose the container's plain HTTP port directly: anyone who can modify the delivered JavaScript can capture every secret and link root.
 
 ## Development
 

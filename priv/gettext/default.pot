@@ -26,19 +26,9 @@ msgstr ""
 msgid "Expiration"
 msgstr ""
 
-#: lib/share_secret_web/live/home_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Failed to create links."
-msgstr ""
-
 #: lib/share_secret_web/components/core_components.ex
 #, elixir-autogen, elixir-format
 msgid "How it works"
-msgstr ""
-
-#: lib/share_secret_web/live/home_live/index.ex
-#, elixir-autogen, elixir-format
-msgid "Invalid form data."
 msgstr ""
 
 #: lib/share_secret_web/live/home_live/show.ex
@@ -141,16 +131,6 @@ msgstr ""
 
 #: lib/share_secret_web/components/core_components.ex
 #, elixir-autogen, elixir-format
-msgid "The URLs are not stored. This means that as long as you keep the links private, it is impossible for anyone to access the decrypted secret."
-msgstr ""
-
-#: lib/share_secret_web/components/core_components.ex
-#, elixir-autogen, elixir-format
-msgid "The secret is stored in the database in an encrypted form. The decryption key is part of the URL, adding an extra layer of security. Only the person with the link can decrypt the secret, ensuring it is securely delivered to the intended recipient. This means that even if someone gains access to the secret itself, they won't be able to decrypt it without the specific key in the URL."
-msgstr ""
-
-#: lib/share_secret_web/components/core_components.ex
-#, elixir-autogen, elixir-format
 msgid "Theme"
 msgstr ""
 
@@ -187,4 +167,39 @@ msgstr ""
 #: lib/share_secret_web/components/core_components.ex
 #, elixir-autogen, elixir-format
 msgid "System"
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "JavaScript and Web Crypto are required to decrypt this secret."
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "JavaScript and Web Crypto are required to encrypt secrets in your browser."
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Secret..."
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "The complete links are never stored. Keep them private: anyone with a link can reveal its secret once, and a compromised browser or application script could still read it."
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/index.html.heex
+#, elixir-autogen, elixir-format
+msgid "Unable to create the secret securely. Please try again."
+msgstr ""
+
+#: lib/share_secret_web/live/home_live/show.html.heex
+#, elixir-autogen, elixir-format
+msgid "Unable to reveal this secret. The link may be invalid, expired, or already used."
+msgstr ""
+
+#: lib/share_secret_web/components/core_components.ex
+#, elixir-autogen, elixir-format
+msgid "Your browser encrypts the secret before sending it. The server stores only ciphertext, while the decryption key stays in the link fragment and is used only in the recipient's browser."
 msgstr ""

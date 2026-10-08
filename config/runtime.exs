@@ -53,6 +53,17 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
+  trust_proxy_headers? = System.get_env("TRUST_PROXY_HEADERS") in ~w(true 1)
+
+  force_ssl =
+    if trust_proxy_headers? do
+      [hsts: true, rewrite_on: [:x_forwarded_proto]]
+    else
+      [hsts: true]
+    end
+
+  config :share_secret, :trust_proxy_headers, trust_proxy_headers?
+
   config :share_secret, ShareSecretWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
@@ -63,7 +74,8 @@ if config_env() == :prod do
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: port
     ],
-    secret_key_base: secret_key_base
+    secret_key_base: secret_key_base,
+    force_ssl: force_ssl
 
   # ## SSL Support
   #

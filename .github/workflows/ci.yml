@@ -80,6 +80,10 @@ jobs:
         run: npm run lint:standard
         working-directory: ./assets
 
+      - name: Run JavaScript Tests
+        run: npm test
+        working-directory: ./assets
+
       - name: Gettext
         run: mix gettext.extract --check-up-to-date
 
