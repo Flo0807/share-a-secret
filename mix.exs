@@ -81,7 +81,7 @@ defmodule ShareSecret.MixProject do
       {:lazy_html, "== 0.1.13", only: :test},
       {:igniter, "== 0.8.4", only: [:dev, :test]},
       {:tidewave, "== 0.9.1", only: [:dev]},
-      {:phoenix_test, "== 0.13.0", only: :test, runtime: false},
+      {:phoenix_test, "== 0.13.1", only: :test, runtime: false},
       {:phoenix_test_playwright, "== 0.19.0", only: :test, runtime: false},
       {:a11y_audit, "== 0.5.0", only: :test}
     ]
