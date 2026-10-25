@@ -2,26 +2,14 @@ defmodule ShareSecretWeb.Browser.ClipboardTest do
   use PhoenixTest.Playwright.Case, async: false
   use ShareSecretWeb, :verified_routes
 
-  import Mox
-
   alias PlaywrightEx.Frame
-  alias ShareSecret.CryptoMock
 
   @timeout Application.compile_env(:phoenix_test, [:playwright, :timeout], 5_000)
 
   @moduletag :playwright
 
-  setup :verify_on_exit!
-  setup :set_mox_global
-
   test "copies generated links and revealed secrets", %{conn: conn} do
     secret_text = "This is my super secret message!"
-    encryption_key = "test_encryption_key_123"
-    encrypted_secret = "encrypted_" <> secret_text
-
-    expect(CryptoMock, :generate_key, fn -> encryption_key end)
-    expect(CryptoMock, :encrypt, fn ^secret_text, ^encryption_key -> encrypted_secret end)
-    expect(CryptoMock, :decrypt!, fn ^encrypted_secret, ^encryption_key -> secret_text end)
 
     session =
       conn
