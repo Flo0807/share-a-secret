@@ -43,7 +43,7 @@ defmodule ShareSecret.MixProject do
     [
       # Core
       {:phoenix, "== 1.8.16"},
-      {:phoenix_html, "== 4.3.0"},
+      {:phoenix_html, "== 4.4.0"},
       {:phoenix_live_view, "== 1.2.13"},
       {:bandit, "== 1.14.1"},
 
