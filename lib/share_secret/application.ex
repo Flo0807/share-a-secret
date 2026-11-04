@@ -11,6 +11,7 @@ defmodule ShareSecret.Application do
       ShareSecretWeb.Telemetry,
       ShareSecret.Repo,
       {Phoenix.PubSub, name: ShareSecret.PubSub},
+      ShareSecret.RateLimiter,
       ShareSecretWeb.Endpoint,
       ShareSecret.ExpirationWorker
     ]

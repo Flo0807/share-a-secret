@@ -1,13 +1,16 @@
 services:
   app:
     image: ghcr.io/flo0807/share-a-secret:latest
-    ports:
-      - "4000:4000"
+    # Keep the application port private. Add a TLS-terminating reverse proxy to
+    # this network and expose only the proxy's HTTPS port.
+    expose:
+      - "4000"
     environment:
       DATABASE_URL: "ecto://postgres:postgres@database/postgres"
       SECRET_KEY_BASE: "fxcNnRdiwtsVvjYxPb1XDeL5fLqQdNP7XkILChPq0TODPAnv+8mPet56WfICmlv5"
       PHX_HOST: "localhost"
       PORT: 4000
+      TRUST_PROXY_HEADERS: "true"
     depends_on:
       - database
   database:

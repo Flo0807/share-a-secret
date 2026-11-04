@@ -1,16 +1,17 @@
 export default {
   mounted () {
+    this.onResize = () => this.resize()
     this.resize()
 
-    this.el.addEventListener('input', this.resize.bind(this))
-    this.el.addEventListener('change', this.resize.bind(this))
+    this.el.addEventListener('input', this.onResize)
+    this.el.addEventListener('change', this.onResize)
   },
   updated () {
     this.resize()
   },
-  beforeDestroy () {
-    this.el.removeEventListener('input', this.resize.bind(this))
-    this.el.removeEventListener('change', this.resize.bind(this))
+  destroyed () {
+    this.el.removeEventListener('input', this.onResize)
+    this.el.removeEventListener('change', this.onResize)
   },
   resize () {
     this.el.style.height = '0'
