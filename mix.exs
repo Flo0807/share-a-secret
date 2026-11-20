@@ -44,7 +44,7 @@ defmodule ShareSecret.MixProject do
       # Core
       {:phoenix, "== 1.8.16"},
       {:phoenix_html, "== 4.4.0"},
-      {:phoenix_live_view, "== 1.2.13"},
+      {:phoenix_live_view, "== 1.2.14"},
       {:bandit, "== 1.15.0"},
 
       # Database and Persistence
