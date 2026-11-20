@@ -26,6 +26,12 @@ import { hooks as colocatedHooks } from 'phoenix-colocated/share_secret'
 import topbar from 'topbar'
 import { themeChange } from 'theme-change'
 import * as Hooks from './hooks/index'
+import { captureSecretFragment } from './secretFragment'
+
+// LiveView includes window.location.href in its socket join payload. Capture and
+// remove every fragment before constructing LiveSocket so secret roots never
+// cross the network, even when a fragment is malformed.
+captureSecretFragment()
 
 // The script is deferred, so the server-rendered theme controls are already in
 // the DOM. theme-change v3 can be initialized repeatedly and only binds each
@@ -34,7 +40,6 @@ themeChange(false)
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content')
 const liveSocket = new LiveSocket('/live', Socket, {
-  longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
   hooks: { ...Hooks, ...colocatedHooks }
 })
@@ -58,12 +63,6 @@ appHeight()
 // connect if there are any LiveViews on the page
 liveSocket.connect()
 
-// expose liveSocket on window for web console debug logs and latency simulation:
-// >> liveSocket.enableDebug()
-// >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
-// >> liveSocket.disableLatencySim()
-window.liveSocket = liveSocket
-
 // The lines below enable quality of life phoenix_live_reload
 // development features:
 //
@@ -71,6 +70,7 @@ window.liveSocket = liveSocket
 //     2. click on elements to jump to their definitions in your code editor
 //
 if (process.env.NODE_ENV === 'development') {
+  window.liveSocket = liveSocket
   window.addEventListener('phx:live_reload:attached', ({ detail: reloader }) => {
     // Enable server log streaming to client.
     // Disable with reloader.disableServerLogs()
