@@ -79,7 +79,7 @@ defmodule ShareSecret.MixProject do
       {:floki, "== 0.38.5", only: :test},
       {:mox, "== 1.3.2", only: :test},
       {:lazy_html, "== 0.1.16", only: :test},
-      {:igniter, "== 0.8.5", only: [:dev, :test]},
+      {:igniter, "== 0.8.6", only: [:dev, :test]},
       {:tidewave, "== 0.9.2", only: [:dev]},
       {:phoenix_test, "== 0.14.0", only: :test, runtime: false},
       {:phoenix_test_playwright, "== 0.19.0", only: :test, runtime: false},
